@@ -111,7 +111,7 @@
             int raceInput;
             do
             {
-                raceInput = userInput.GetMonsterRaceInput(1, 3);
+                raceInput = userInput.GetMonsterRaceInput(1, 7);
 
             } while (monster1 != null && (EMonsterRace)raceInput == monster1.MonsterRace);
             switch ((EMonsterRace)raceInput)

@@ -23,7 +23,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public override void TakeDamage(float _damageTaken, Monster _attackingMonster, bool _isCritical = false)
         {
             int triggerChance = random.Next(1, 11);
-            if (triggerChance == 1 && !_isCritical)
+            if (triggerChance <= 2 && !_isCritical)
             {
                 ActivateDodgeSkill.Invoke();
             }

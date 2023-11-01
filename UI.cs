@@ -169,8 +169,14 @@ namespace LL_MonsterKampfSimulatorDNDSystem
                     break;
                 case Lich lich:
                     lich.ActivateReviveSkill += PrintReviveSkill;
+                    lich.ActivateCurseSkill += PrintCurseSkill;
                     break;
             }
+        }
+
+        private void PrintCurseSkill()
+        {
+            Console.WriteLine("Der untote Magier verflucht sein Opfer!");
         }
 
         private void PrintReviveSkill()

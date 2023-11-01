@@ -7,6 +7,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         private float baseArmor = 0;
         private float maxHP;
         public Action ActivateReviveSkill;
+        public Action ActivateCurseSkill;
         private bool cursedEnemy;
         public Lich(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
@@ -23,6 +24,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             var triggerChance = random.Next(1, 21);
             if (!cursedEnemy && triggerChance <= 11)
             {
+                ActivateCurseSkill.Invoke();
                 cursedEnemy = true;
             }
             else
@@ -35,7 +37,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         {
             if (cursedEnemy)
             {
-                base.TakeDamage(_damageTaken / 2, _attackingMonster);
+                base.TakeDamage(MathF.Ceiling(_damageTaken / 2), _attackingMonster);
                 cursedEnemy = false;
             }
             else

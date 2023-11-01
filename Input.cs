@@ -142,6 +142,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
                 var userInput = Console.ReadLine();
                 if (float.TryParse(userInput, out float floatInput))
                 {
+                    //var currentStepID = stepID - 1;
                     foreach (float stat in _rolledStats)
                     {
                         if (floatInput == stat)
@@ -149,11 +150,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
                             _rolledStats.Remove(stat);
                             return stat;
                         }
-                        else
-                        {
-                            stepID--;
-                        }
                     }
+                    stepID--;
                 }
                 else
                 {

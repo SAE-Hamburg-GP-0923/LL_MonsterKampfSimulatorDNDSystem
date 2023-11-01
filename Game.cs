@@ -18,11 +18,34 @@
         private Random dice = new Random();
         private int rolledGenericValue;
 
+        public static bool ShowDiceRolling;
+        /*
+        Ideas:
+        Beholder inklusive all rays (boss?)
+         */
+
         public enum EMonsterRace
         {
+            //strenght fighter
             Ork = 1,
+            //strength fighter
             Troll = 2,
+            //dex fighter
             Goblin = 3,
+            //dex fighter
+            Centaur = 4,
+            //int caster
+            Mindflayer = 5,
+            //wis caster
+            Hag = 6,
+            //char caster
+            Lich = 7,
+
+        }
+        public Game(bool _debug, bool _showDiceRolling)
+        {
+            debug = _debug;
+            ShowDiceRolling = _showDiceRolling;
         }
 
         public void GameInit()
@@ -38,11 +61,11 @@
             text.RegisterMonsters(monster2);
             startGame += text.StartGame;
             endGamePrint += text.PrintEndGame;
-            if (monster1.Dexterity >= monster2.Dexterity)
+            if (monster1.Initiative >= monster2.Initiative)
             {
                 GameUpdate(monster1, monster2);
             }
-            else if (monster2.Dexterity > monster1.Dexterity)
+            else if (monster2.Initiative > monster1.Initiative)
             {
                 GameUpdate(monster2, monster1);
             }
@@ -60,6 +83,7 @@
                     _firstMonster.Attack(_secondMonster);
                     CheckVictoryCondition(_firstMonster, _secondMonster);
                     if (!gameRunning) break;
+                    if (ShowDiceRolling) Console.ReadKey();
                     _secondMonster.Attack(_firstMonster);
                     CheckVictoryCondition(_firstMonster, _secondMonster);
                     Console.ReadKey();
@@ -70,12 +94,12 @@
 
         private void CheckVictoryCondition(Monster _firstMonster, Monster _secondMonster)
         {
-            if (_firstMonster.HP <= 0)
+            if (_firstMonster.HP <= 0 || _firstMonster.MainUsedStatValue <= 0)
             {
                 gameRunning = false;
                 endGamePrint.Invoke(_secondMonster, roundCount);
             }
-            else if (_secondMonster.HP <= 0)
+            else if (_secondMonster.HP <= 0 || _secondMonster.MainUsedStatValue <= 0)
             {
                 gameRunning = false;
                 endGamePrint.Invoke(_firstMonster, roundCount);
@@ -98,6 +122,14 @@
                     return new Troll(userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), 12);
                 case EMonsterRace.Goblin:
                     return new Goblin(userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), 6);
+                case EMonsterRace.Centaur:
+                    return new Centaur(userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), 8);
+                case EMonsterRace.Mindflayer:
+                    return new Mindflayer(userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), 4);
+                case EMonsterRace.Hag:
+                    return new Hag(userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), 6);
+                case EMonsterRace.Lich:
+                    return new Lich(userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), userInput.ChooseStat(statSet), 8);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

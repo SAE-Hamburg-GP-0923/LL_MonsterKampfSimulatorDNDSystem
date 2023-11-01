@@ -6,12 +6,13 @@ namespace LL_MonsterKampfSimulatorDNDSystem
     internal class Goblin : Monster
     {
         Random random = new Random();
-        public Action activateDodgeSkill;
-        private float baseHP;
+        public Action ActivateDodgeSkill;
         private float baseArmor = 2;
         public Goblin(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
-            hp = baseHP * _constitution;
+            monsterName = "Goblin";
+            hp = base.RollMonsterHP(4,6,_constitution);
+            MonsterRace = Game.EMonsterRace.Goblin;
             mainUsedStatValue = _dexterity;
             armor = baseArmor;
         }
@@ -19,16 +20,16 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         {
             base.Attack(_creatureToHit);
         }
-        public override void TakeDamage(float _damageTaken, bool _isCritical = false)
+        public override void TakeDamage(float _damageTaken, Monster _attackingMonster, bool _isCritical = false)
         {
             int triggerChance = random.Next(1, 11);
             if (triggerChance == 1 && !_isCritical)
             {
-                activateDodgeSkill.Invoke();
+                ActivateDodgeSkill.Invoke();
             }
             else
             {
-                base.TakeDamage(_damageTaken);
+                base.TakeDamage(_damageTaken, this);
             }
         }
     }

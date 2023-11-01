@@ -14,29 +14,45 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 
         public void PrintChooseStrength()
         {
+            Console.Clear();
             Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Stärke benutzten willst!");
         }
         public void PrintChooseDexterity()
         {
+            Console.Clear();
             Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Geschicklichkeit benutzten willst!");
         }
 
         public void PrintChooseConstitution()
         {
+            Console.Clear();
             Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Konstitution benutzten willst!");
         }
 
         public void PrintChooseIntelligence()
         {
+            Console.Clear();
             Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Intelligenz benutzten willst!");
+        }
+        private void PrintChooseCharisma()
+        {
+            Console.Clear();
+            Console.WriteLine("Bitte gebe die Zahl ein, welche du für dein Charisma benutzten willst!");
+        }
+
+        private void PrintChooseWisdom()
+        {
+            Console.Clear();
+            Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Weisheit benutzten willst!");
         }
 
         public void PrintInputRace()
         {
             Console.WriteLine("Bitte wähle die Rasse des Monsters!");
-            Console.WriteLine("[1] = Ork");
-            Console.WriteLine("[2] = Troll");
-            Console.WriteLine("[3] = Goblin");
+            foreach (int entry in Enum.GetValues(typeof(Game.EMonsterRace)))
+            {
+                Console.WriteLine($"[{entry}] - {(Game.EMonsterRace)entry}");
+            }
         }
 
         public void PrintNextMonsterText()
@@ -86,15 +102,6 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         {
             Console.WriteLine($"Der Wert muss zwischen {_min} und {_max} liegen!");
         }
-
-        //public void PrintHPError()
-        //{
-        //    Console.WriteLine("Oh! Du hast einem oder beiden Monstern 0 Lebenspunkte gegeben!");
-        //    Console.WriteLine("Ein Monster ohne Lebenspunkte ist ein totes Monster.");
-        //    Console.WriteLine("Wir haben den Wert des/der betroffenen Monster/s auf 1 gesetzt!");
-        //    Console.WriteLine("Bitt achte in Zukunft darauf, keine toten Monster zu erstellen!");
-        //    Console.ReadKey();
-        //}
         private void PrintHealSkill()
         {
             Console.WriteLine("Troll benutzt Regeneration!");
@@ -102,6 +109,10 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         private void PrintDodgeSkill()
         {
             Console.WriteLine("Der Goblin ist ausgewichen!");
+        }
+        private void PrintCriticalSkill()
+        {
+            Console.WriteLine("Der Ork landet einen kritischen Treffer!");
         }
 
         public void RegisterInput(Input _userInput)
@@ -127,31 +138,87 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             }
         }
 
-        private void PrintChooseCharisma()
-        {
-            Console.WriteLine("Bitte gebe die Zahl ein, welche du für dein Charisma benutzten willst!");
-        }
-
-        private void PrintChooseWisdom()
-        {
-            Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Weisheit benutzten willst!");
-        }
 
         public void RegisterMonsters(Monster _monster)
         {
             _monster.HPPrint += PrintHP;
             _monster.DamagePrint += PrintDamage;
+            _monster.PrintDiceRollingAnim += PrintDiceRollingAnim;
+            _monster.DamageCalculationPrint += PrintDamageCalculation;
+            _monster.DamageReducedPrint += PrintDamageReduction;
             switch (_monster)
             {
                 case Ork ork:
+                    ork.ActivateCriticalSkill += PrintCriticalSkill;
                     break;
                 case Troll troll:
-                    troll.activateHealSkill += PrintHealSkill;
+                    troll.ActivateHealSkill += PrintHealSkill;
                     break;
                 case Goblin goblin:
-                    goblin.activateDodgeSkill += PrintDodgeSkill;
+                    goblin.ActivateDodgeSkill += PrintDodgeSkill;
+                    break;
+                case Centaur centaur:
+                    centaur.ActivateKickSkill += PrintKickSkill;
+                    break;
+                case Mindflayer mindflayer:
+                    mindflayer.ActivateDrainStatSkill += PrintDrainSkill;
+                    mindflayer.ActivateGrappleSkill += PrintGrappleSkill;
+                    break;
+                case Hag hag:
+                    hag.ActivateMirrorImageSkill += PrintMirrorImageSkill;
+                    break;
+                case Lich lich:
+                    lich.ActivateReviveSkill += PrintReviveSkill;
                     break;
             }
+        }
+
+        private void PrintReviveSkill()
+        {
+            Console.WriteLine("Der untote Magier belebt sich wieder!");
+        }
+
+        private void PrintMirrorImageSkill()
+        {
+            Console.WriteLine("Die Vettel benutzt den Zauber 'Spiegelbild'!");
+        }
+
+        private void PrintGrappleSkill()
+        {
+            Console.WriteLine("Der Mindflayer ergreift sein Opfer und hält es fest!");
+        }
+
+        private void PrintDrainSkill()
+        {
+            Console.WriteLine("Der Mindflayer entzieht seinem Opfer Kraft!");
+        }
+
+        private void PrintKickSkill()
+        {
+            Console.WriteLine("Der Zentaur konternt mit einem Tritt");
+        }
+
+        private void PrintDamageReduction(float _armorValue, Monster _monster)
+        {
+            Console.WriteLine($"Der {_monster.MonsterName} verhindert {_armorValue} an Schaden!");
+        }
+
+        private void PrintDamageCalculation(float _actualDamage, Monster _monster)
+        {
+            Console.WriteLine($"Der {_monster.MonsterName} kommt auf einen Gesamtwert von {_actualDamage} Schaden!");
+        }
+
+        private void PrintDiceRollingAnim(float _rolledValue, Monster _monster)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                Random random = new Random();
+                Console.Clear();
+                Console.Write(random.Next(1, 20));
+                Thread.Sleep(50);
+            }
+            Console.Clear();
+            Console.WriteLine($"Der {_monster.MonsterName} hat eine {_rolledValue} gewürfelt!");
         }
     }
 }

@@ -12,7 +12,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             {
                 if (hp != value)
                 {
-                    hp = value;
+                    hp = MathF.Ceiling(value);
                     HPPrint.Invoke(this);
                 }
 
@@ -22,6 +22,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public float Strength => strength;
         protected float dexterity;
         public float Dexterity => dexterity;
+        protected float initiative;
+        public float Initiative => initiative;
         protected float constitution;
         public float Constitution => constitution;
 
@@ -36,11 +38,12 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public float Armor => armor;
 
 
-        
+
         protected int rolledValue;
         protected int maxDiceValue;
         protected float mainUsedStatValue;
-        protected Random attackDice = new Random();
+        public float MainUsedStatValue => mainUsedStatValue;
+        protected Random monsterDice = new Random();
 
         public Game.EMonsterRace MonsterRace;
         protected string monsterName;
@@ -49,6 +52,13 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public event DamagePrintHandler DamagePrint;
         public delegate void HPPrintHandler(Monster _monster);
         public event HPPrintHandler HPPrint;
+        public Action<float, Monster> PrintDiceRollingAnim;
+        public Action<float, Monster> DamageCalculationPrint;
+        public Action<float, Monster> DamageReducedPrint;
+
+        private bool isCreated;
+        protected bool hasAttacked;
+        public bool HasAttacked => hasAttacked;
 
         public Monster(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
         {
@@ -59,32 +69,55 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             wisdom = _wisdom;
             charisma = _charisma;
             maxDiceValue = _maxDiceValue;
+            initiative = _dexterity;
         }
-
-        public Monster()
-        {
-        }
-
         public virtual void Attack(Monster _creatureToHit)
         {
-            _creatureToHit.TakeDamage(RollAttackDice(1, maxDiceValue) + mainUsedStatValue);
+            if (!hasAttacked) hasAttacked = true;
+            var damage = (RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+            DamageCalculationPrint.Invoke(damage, this);
+            _creatureToHit.TakeDamage(damage, this);
         }
 
-        public virtual void TakeDamage(float _damageTaken, bool _isCritical = false)
+        public virtual void TakeDamage(float _damageTaken, Monster _attackingMonster, bool _isCritical = false)
         {
             float actualDamage;
             actualDamage = MathF.Max(_damageTaken - armor, 0);
+            if (_damageTaken > 0) DamageReducedPrint.Invoke(armor, this);
             DamagePrint.Invoke(this, actualDamage);
             HP = MathF.Max(0, HP - actualDamage);
         }
 
-        public int RollAttackDice(int _diceAmount, int _maxDiceValue)
+        public int RollMonsterDice(int _diceAmount, int _maxDiceValue)
         {
+            rolledValue = 0;
             for (int i = 0; i < _diceAmount; i++)
             {
-                rolledValue += attackDice.Next(1, _maxDiceValue + 1);
+                rolledValue += monsterDice.Next(1, _maxDiceValue + 1);
+                if (isCreated && Game.ShowDiceRolling) PrintDiceRollingAnim.Invoke(rolledValue, this);
             }
             return rolledValue;
+        }
+
+        public float CalculateModifier(float _flatValue)
+        {
+            return MathF.Floor((_flatValue - 10f) / 2);
+        }
+
+        public float RollMonsterHP(int _diceAmount, int _maxDiceValue, float _flatConstitution)
+        {
+            float rolledValue = RollMonsterDice(_diceAmount, _maxDiceValue);
+            for (int i = 0; i < _diceAmount; i++)
+            {
+                rolledValue += CalculateModifier(_flatConstitution);
+            }
+            this.isCreated = true;
+            return MathF.Max(rolledValue, (((_maxDiceValue / 2) + 1) * _diceAmount) + _diceAmount * CalculateModifier(_flatConstitution));
+        }
+
+        public virtual void ChangeMainStat(float _mainUsedStatChange)
+        {
+            mainUsedStatValue -= _mainUsedStatChange;
         }
     }
 }

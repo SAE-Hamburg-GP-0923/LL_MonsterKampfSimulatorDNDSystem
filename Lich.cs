@@ -24,7 +24,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public override void Attack(Monster _creatureToHit)
         {
             var triggerChance = random.Next(1, 21);
-            if (!cursedEnemy && triggerChance <= 5)
+            if (!cursedEnemy && triggerChance <= 5 && !isStunned)
             {
                 ActivateCurseSkill.Invoke(this);
                 cursedEnemy = true;

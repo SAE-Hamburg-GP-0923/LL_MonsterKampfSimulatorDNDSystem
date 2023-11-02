@@ -20,7 +20,7 @@
 
         public override void Attack(Monster _creatureToHit)
         {
-            if (hasGrappledEnemy)
+            if (hasGrappledEnemy && !isStunned)
             {
                 DrainStat(_creatureToHit);
                 hasGrappledEnemy = false;

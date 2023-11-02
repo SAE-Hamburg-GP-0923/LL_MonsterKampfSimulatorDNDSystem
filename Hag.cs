@@ -23,7 +23,7 @@
         public override void Attack(Monster _creatureToHit)
         {
             var triggerChance = random.Next(1, 21);
-            if (triggerChance <= 5 && currentMirrorImages == 0)
+            if (triggerChance <= 5 && currentMirrorImages == 0 && !isStunned)
             {
                 CastMirrorImage();
             }

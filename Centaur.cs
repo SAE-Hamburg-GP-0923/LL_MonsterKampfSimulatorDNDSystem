@@ -46,10 +46,18 @@
 
         public void Kick(Monster _creatureToHit)
         {
-            ActivateKickSkill.Invoke(this);
-            var damage = MathF.Max(0, RollMonsterDice(1, 4) + CalculateModifier(mainUsedStatValue));
-            DamageCalculationPrint.Invoke(damage, this);
-            _creatureToHit.TakeDamage(damage, this);
+            if (isStunned)
+            {
+                return;
+            }
+            else
+            {
+
+                ActivateKickSkill.Invoke(this);
+                var damage = MathF.Max(0, RollMonsterDice(1, 4) + CalculateModifier(mainUsedStatValue));
+                DamageCalculationPrint.Invoke(damage, this);
+                _creatureToHit.TakeDamage(damage, this);
+            }
         }
     }
 }

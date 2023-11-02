@@ -20,7 +20,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public override void Attack(Monster _creatureToHit)
         {
             int triggerChance = random.Next(1, 21);
-            if (triggerChance == 1)
+            if (triggerChance == 1 && !isStunned)
             {
                 if (!hasAttacked) hasAttacked = true;
                 ActivateCriticalSkill.Invoke(this);

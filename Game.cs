@@ -62,6 +62,10 @@
             maxRoundCounter = _maxRoundCounter;
         }
 
+        //TODO: -- Possible Features --
+        // Karmic Dice
+
+        //TODO: debug function to skip to boss
         public void GameInit()
         {
             bossTriggerChance = random.Next(1, 11);
@@ -124,7 +128,7 @@
                 {
                     gameRunning = false;
                     bossFight = true;
-                    // Monster beholder = new Monster();
+                    Monster boss = new Beholder(10, 14, 18, 17, 15, 17, 10);
                     // bossfightstart.invoke();
                     // GameBossFight(_secondMonster, beholder);
                 }

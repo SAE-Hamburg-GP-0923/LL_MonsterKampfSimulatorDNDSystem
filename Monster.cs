@@ -58,6 +58,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 
         private bool isCreated;
         protected bool hasAttacked;
+        protected bool isStunned;
         public bool HasAttacked => hasAttacked;
 
         public Monster(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
@@ -73,10 +74,17 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         }
         public virtual void Attack(Monster _creatureToHit)
         {
-            if (!hasAttacked) hasAttacked = true;
-            var damage = MathF.Max(0,RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
-            DamageCalculationPrint.Invoke(damage, this);
-            _creatureToHit.TakeDamage(damage, this);
+            if (isStunned)
+            {
+                RemoveStunned();
+            }
+            else
+            {
+                if (!hasAttacked) hasAttacked = true;
+                var damage = MathF.Max(0, RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+                DamageCalculationPrint.Invoke(damage, this);
+                _creatureToHit.TakeDamage(damage, this);
+            }
         }
 
         public virtual void TakeDamage(float _damageTaken, Monster _attackingMonster, bool _isCritical = false)
@@ -118,6 +126,16 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public virtual void ChangeMainStat(float _mainUsedStatChange)
         {
             mainUsedStatValue -= _mainUsedStatChange;
+        }
+
+        public void GetStunned()
+        {
+            isStunned = true;
+        }
+
+        public void RemoveStunned()
+        {
+            isStunned = false;
         }
     }
 }

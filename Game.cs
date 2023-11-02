@@ -49,6 +49,12 @@
             Lich = 7,
 
         }
+
+        public enum EBossRace
+        {
+            //BOSS1
+            Beholder = 1,
+        }
         public Game(bool _debug, bool _showDiceRolling, int _maxRoundCounter)
         {
             debug = _debug;

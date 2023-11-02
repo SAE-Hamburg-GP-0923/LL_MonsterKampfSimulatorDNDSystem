@@ -48,6 +48,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 
         public Game.EMonsterRace MonsterRace;
         protected string monsterName;
+        public Game.EBossRace BossRace;
         public string MonsterName => monsterName;
         public Action<float, Monster> DamagePrint;
         public Action<Monster> HPPrint;

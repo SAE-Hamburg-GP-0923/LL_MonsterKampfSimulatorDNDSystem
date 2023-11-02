@@ -33,7 +33,7 @@
 
         public enum EMonsterRace
         {
-            //strenght fighter
+            //strength fighter
             Ork = 1,
             //strength fighter
             Troll = 2,

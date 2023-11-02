@@ -7,10 +7,10 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         Random random = new Random();
         private float baseArmor = 0;
         public Action<Monster> ActivateCriticalSkill;
-        public Ork(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
+        public Ork(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Ork";
-            mainUsedStatValue = _strenght;
+            mainUsedStatValue = _strength;
             MonsterRace = Game.EMonsterRace.Ork;
             hp = base.RollMonsterHP(4, 10, _constitution);
             armor = baseArmor;

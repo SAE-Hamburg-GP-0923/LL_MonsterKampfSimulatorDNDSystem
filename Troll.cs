@@ -7,13 +7,13 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         private float maxHP;
         public Action<Monster> ActivateHealSkill;
         private float baseArmor = 5;
-        public Troll(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
+        public Troll(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Troll";
             MonsterRace = Game.EMonsterRace.Troll;
             hp = base.RollMonsterHP(4, 12, _constitution);
             maxHP = hp;
-            mainUsedStatValue = _strenght;
+            mainUsedStatValue = _strength;
             armor = baseArmor;
             monsterColor = ConsoleColor.DarkGreen;
         }

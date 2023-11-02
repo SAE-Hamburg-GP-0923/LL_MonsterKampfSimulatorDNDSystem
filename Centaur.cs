@@ -5,7 +5,7 @@
         Random random = new Random();
         private float baseArmor = 1;
         public Action<Monster> ActivateKickSkill;
-        public Centaur(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
+        public Centaur(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             initiative = _dexterity * 2;
             monsterName = "Der Centaur";

@@ -60,9 +60,9 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         protected bool hasAttacked;
         public bool HasAttacked => hasAttacked;
 
-        public Monster(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
+        public Monster(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
         {
-            strength = _strenght;
+            strength = _strength;
             dexterity = _dexterity;
             constitution = _constitution;
             intelligence = _intelligence;

@@ -1,7 +1,4 @@
-﻿
-using System.Threading;
-
-namespace LL_MonsterKampfSimulatorDNDSystem
+﻿namespace LL_MonsterKampfSimulatorDNDSystem
 {
     internal class UI
     {

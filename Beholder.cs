@@ -18,7 +18,7 @@
             disintegration ray = really big boom
             death ray = medium big boom
           */
-        public Beholder(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
+        public Beholder(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Beholder";
             hp = base.RollMonsterHP(4, 20, _constitution);

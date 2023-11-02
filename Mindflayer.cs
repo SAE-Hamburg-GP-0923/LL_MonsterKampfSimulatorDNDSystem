@@ -8,7 +8,7 @@
         public Action<Monster> ActivateDrainStatSkill;
         private bool hasGrappledEnemy;
         public Action<Monster> ActivateGrappleSkill;
-        public Mindflayer(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
+        public Mindflayer(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Mindflayer";
             hp = base.RollMonsterHP(4, 6, _constitution);

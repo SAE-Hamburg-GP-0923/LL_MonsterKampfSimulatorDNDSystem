@@ -4,6 +4,7 @@
     {
         private bool debug;
         private bool gameRunning = true;
+        private bool bossFight;
         private Monster monster1;
         private Monster monster2;
         private Input userInput;
@@ -12,13 +13,19 @@
         private event EndGamePrintHandler endGamePrint;
         private delegate void ChangeStatHandler(Monster _monsterToChangeStatsOn);
         private Action startGame;
+        private Action endGameDraw;
         private int roundCount;
 
         public List<float> RolledStats = new List<float>();
         private Random dice = new Random();
         private int rolledGenericValue;
 
+        private int maxRoundCounter;
+
         public static bool ShowDiceRolling;
+        private Random random = new Random();
+        private int bossTriggerChance;
+
         /*
         Ideas:
         Beholder inklusive all rays (boss?)
@@ -42,14 +49,16 @@
             Lich = 7,
 
         }
-        public Game(bool _debug, bool _showDiceRolling)
+        public Game(bool _debug, bool _showDiceRolling, int _maxRoundCounter)
         {
             debug = _debug;
             ShowDiceRolling = _showDiceRolling;
+            maxRoundCounter = _maxRoundCounter;
         }
 
         public void GameInit()
         {
+            bossTriggerChance = random.Next(1, 11);
             userInput = new Input();
             text = new UI();
             text.RegisterInput(userInput);
@@ -61,6 +70,7 @@
             text.RegisterMonsters(monster2);
             startGame += text.StartGame;
             endGamePrint += text.PrintEndGame;
+            endGameDraw += text.PrintEndGameDraw;
             if (monster1.Initiative >= monster2.Initiative)
             {
                 GameUpdate(monster1, monster2);
@@ -70,12 +80,10 @@
                 GameUpdate(monster2, monster1);
             }
         }
-
-        //TODO: Max round count
         private void GameUpdate(Monster _firstMonster, Monster _secondMonster)
         {
             startGame.Invoke();
-            while (gameRunning)
+            while (gameRunning && roundCount < maxRoundCounter)
             {
                 if (_firstMonster.HP > 0 && _secondMonster.HP > 0)
                 {
@@ -84,11 +92,21 @@
                     CheckVictoryCondition(_firstMonster, _secondMonster);
                     if (!gameRunning) break;
                     if (ShowDiceRolling) Console.ReadKey();
+                    Console.WriteLine(" ");
                     _secondMonster.Attack(_firstMonster);
                     CheckVictoryCondition(_firstMonster, _secondMonster);
                     Console.ReadKey();
                     Console.Clear();
                 }
+            }
+            if (gameRunning) endGameDraw.Invoke();
+        }
+
+        private void GameBossFight(Monster _survivingMonster, Monster _boss)
+        {
+            while (bossFight)
+            {
+
             }
         }
 
@@ -96,11 +114,27 @@
         {
             if (_firstMonster.HP <= 0 || _firstMonster.MainUsedStatValue <= 0)
             {
+                if (bossTriggerChance <= 2)
+                {
+                    gameRunning = false;
+                    bossFight = true;
+                    // Monster beholder = new Monster();
+                    // bossfightstart.invoke();
+                    // GameBossFight(_secondMonster, beholder);
+                }
                 gameRunning = false;
                 endGamePrint.Invoke(_secondMonster, roundCount);
             }
             else if (_secondMonster.HP <= 0 || _secondMonster.MainUsedStatValue <= 0)
             {
+                if (bossTriggerChance <= 2)
+                {
+                    gameRunning = false;
+                    bossFight = true;
+                    // Monster beholder = new Monster();
+                    // bossfightstart.invoke();
+                    // GameBossFight(_firstMonster, beholder);
+                }
                 gameRunning = false;
                 endGamePrint.Invoke(_firstMonster, roundCount);
             }

@@ -5,15 +5,19 @@
         Random random = new Random();
         private float baseArmor = 0;
         private int currentMirrorImages;
+        public int CurrentMirrorImages => currentMirrorImages;
         private int maxMirrorImages = 4;
-        public Action ActivateMirrorImageSkill;
+        public Action<Monster, string> ActivateMirrorImageSkill;
+        public Action<Hag> MirrorImageHit;
+        private string mirrorImageName = "Spiegelbild";
         public Hag(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
-            monsterName = "Hag";
+            monsterName = "Die Hag";
             hp = base.RollMonsterHP(4, 8, _constitution);
             MonsterRace = Game.EMonsterRace.Hag;
             mainUsedStatValue = _wisdom;
             armor = baseArmor;
+            monsterColor = ConsoleColor.DarkCyan;
         }
 
         public override void Attack(Monster _creatureToHit)
@@ -33,6 +37,7 @@
             if (currentMirrorImages > 0 && random.Next(1, currentMirrorImages + 2) != currentMirrorImages + 1)
             {
                 currentMirrorImages--;
+                MirrorImageHit.Invoke(this);
             }
             else
             {
@@ -42,7 +47,7 @@
 
         public void CastMirrorImage()
         {
-            ActivateMirrorImageSkill.Invoke();
+            ActivateMirrorImageSkill.Invoke(this, mirrorImageName);
             currentMirrorImages = maxMirrorImages;
         }
     }

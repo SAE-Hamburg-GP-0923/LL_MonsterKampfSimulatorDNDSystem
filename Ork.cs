@@ -6,14 +6,15 @@ namespace LL_MonsterKampfSimulatorDNDSystem
     {
         Random random = new Random();
         private float baseArmor = 0;
-        public Action ActivateCriticalSkill;
+        public Action<Monster> ActivateCriticalSkill;
         public Ork(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
-            monsterName = "Ork";
+            monsterName = "Der Ork";
             mainUsedStatValue = _strenght;
             MonsterRace = Game.EMonsterRace.Ork;
             hp = base.RollMonsterHP(4, 10, _constitution);
             armor = baseArmor;
+            monsterColor = ConsoleColor.Green;
         }
 
         public override void Attack(Monster _creatureToHit)
@@ -22,10 +23,10 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             if (triggerChance == 1)
             {
                 if (!hasAttacked) hasAttacked = true;
-                ActivateCriticalSkill.Invoke();
-                var damage = (RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+                ActivateCriticalSkill.Invoke(this);
+                var damage = MathF.Max(0, (RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue)) * 2);
                 DamageCalculationPrint.Invoke(damage, this);
-                _creatureToHit.TakeDamage(damage * 2, this);
+                _creatureToHit.TakeDamage(damage, this);
             }
             else
             {

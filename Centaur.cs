@@ -4,15 +4,16 @@
     {
         Random random = new Random();
         private float baseArmor = 1;
-        public Action ActivateKickSkill;
+        public Action<Monster> ActivateKickSkill;
         public Centaur(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             initiative = _dexterity * 2;
-            monsterName = "Centaur";
+            monsterName = "Der Centaur";
             hp = base.RollMonsterHP(4, 8, _constitution);
             MonsterRace = Game.EMonsterRace.Centaur;
             mainUsedStatValue = _dexterity;
             armor = baseArmor;
+            monsterColor = ConsoleColor.Gray;
         }
         public override void Attack(Monster _creatureToHit)
         {
@@ -45,7 +46,8 @@
 
         public void Kick(Monster _creatureToHit)
         {
-            var damage = (RollMonsterDice(1, 4) + CalculateModifier(mainUsedStatValue));
+            ActivateKickSkill.Invoke(this);
+            var damage = MathF.Max(0, RollMonsterDice(1, 4) + CalculateModifier(mainUsedStatValue));
             DamageCalculationPrint.Invoke(damage, this);
             _creatureToHit.TakeDamage(damage, this);
         }

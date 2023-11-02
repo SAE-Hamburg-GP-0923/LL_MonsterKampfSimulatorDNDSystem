@@ -37,7 +37,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         protected float armor;
         public float Armor => armor;
 
-
+        protected ConsoleColor monsterColor;
+        public ConsoleColor MonsterColor => monsterColor;
 
         protected int rolledValue;
         protected int maxDiceValue;
@@ -48,10 +49,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public Game.EMonsterRace MonsterRace;
         protected string monsterName;
         public string MonsterName => monsterName;
-        public delegate void DamagePrintHandler(Monster _monster, float _actualDamage);
-        public event DamagePrintHandler DamagePrint;
-        public delegate void HPPrintHandler(Monster _monster);
-        public event HPPrintHandler HPPrint;
+        public Action<float, Monster> DamagePrint;
+        public Action<Monster> HPPrint;
         public Action<float, Monster> PrintDiceRollingAnim;
         public Action<float, Monster> DamageCalculationPrint;
         public Action<float, Monster> DamageReducedPrint;
@@ -74,7 +73,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public virtual void Attack(Monster _creatureToHit)
         {
             if (!hasAttacked) hasAttacked = true;
-            var damage = (RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+            var damage = MathF.Max(0,RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
             DamageCalculationPrint.Invoke(damage, this);
             _creatureToHit.TakeDamage(damage, this);
         }
@@ -84,7 +83,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             float actualDamage;
             actualDamage = MathF.Max(_damageTaken - armor, 0);
             if (_damageTaken > 0) DamageReducedPrint.Invoke(armor, this);
-            DamagePrint.Invoke(this, actualDamage);
+            DamagePrint.Invoke(actualDamage, this);
             HP = MathF.Max(0, HP - actualDamage);
         }
 

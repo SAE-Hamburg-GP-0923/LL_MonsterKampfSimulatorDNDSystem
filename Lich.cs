@@ -6,25 +6,27 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         Random random = new Random();
         private float baseArmor = 0;
         private float maxHP;
-        public Action ActivateReviveSkill;
-        public Action ActivateCurseSkill;
+        public Action<Monster> ActivateReviveSkill;
+        public Action<Monster> ActivateCurseSkill;
+        public Action<Monster> CurseEffectPrint;
         private bool cursedEnemy;
         public Lich(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strenght, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
-            monsterName = "Lich";
+            monsterName = "Der Lich";
             hp = base.RollMonsterHP(4, 6, _constitution);
             maxHP = hp;
             MonsterRace = Game.EMonsterRace.Lich;
             mainUsedStatValue = _wisdom;
             armor = baseArmor;
+            monsterColor = ConsoleColor.DarkGray;
         }
 
         public override void Attack(Monster _creatureToHit)
         {
             var triggerChance = random.Next(1, 21);
-            if (!cursedEnemy && triggerChance <= 11)
+            if (!cursedEnemy && triggerChance <= 5)
             {
-                ActivateCurseSkill.Invoke();
+                ActivateCurseSkill.Invoke(this);
                 cursedEnemy = true;
             }
             else
@@ -37,7 +39,11 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         {
             if (cursedEnemy)
             {
-                base.TakeDamage(MathF.Ceiling(_damageTaken / 2), _attackingMonster);
+                float actualDamage;
+                actualDamage = MathF.Max(MathF.Ceiling(_damageTaken / 2 - armor), 0);
+                if (_damageTaken > 0) CurseEffectPrint.Invoke(this);
+                DamagePrint.Invoke(actualDamage, this);
+                HP = MathF.Max(0, HP - actualDamage);
                 cursedEnemy = false;
             }
             else
@@ -52,6 +58,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         }
         public void Revive()
         {
+            ActivateReviveSkill.Invoke(this);
             HP = MathF.Floor(maxHP / 4);
         }
     }

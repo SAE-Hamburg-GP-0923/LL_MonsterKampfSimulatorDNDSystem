@@ -5,6 +5,9 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 {
     internal class UI
     {
+        private ConsoleColor damageColor = ConsoleColor.Red;
+        private ConsoleColor armorColor = ConsoleColor.Blue;
+        private ConsoleColor hpColor = ConsoleColor.White;
         public void PrintErrorMessage(float _min, float _max)
         {
             Console.Clear();
@@ -32,6 +35,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public void PrintChooseIntelligence()
         {
             Console.Clear();
+            
             Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Intelligenz benutzten willst!");
         }
         private void PrintChooseCharisma()
@@ -57,23 +61,28 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 
         public void PrintNextMonsterText()
         {
+            Console.Clear();
             Console.WriteLine("Nun gebe erneut alle Werte ein. Diesesmal für das zweite Monster!");
         }
 
         public void PrintEndGame(Monster _winningMonster, int _roundCount)
         {
             //Console.Clear();
-            Console.WriteLine($"Der {_winningMonster.MonsterName} hat nach {_roundCount} Runden gewonnen!");
+            ConsoleWriteColorLine($"{_winningMonster.MonsterName} hat nach {_roundCount} Runden gewonnen!", _winningMonster.MonsterColor);
         }
 
         public void PrintHP(Monster _monster)
         {
-            Console.WriteLine($"{_monster.MonsterName} hat noch {_monster.HP} Leben!");
+            ConsoleWriteColor($"{_monster.MonsterName} hat noch ", _monster.MonsterColor);
+            ConsoleWriteColor(_monster.HP.ToString(), hpColor);
+            ConsoleWriteColorLine(" Leben!", _monster.MonsterColor);
         }
 
-        public void PrintDamage(Monster _monster, float _actualDamage)
+        public void PrintDamage(float _actualDamage, Monster _monster)
         {
-            Console.WriteLine($"Der {_monster.MonsterName} hat {_actualDamage} Punkte Schaden bekommen!");
+            ConsoleWriteColor($"{_monster.MonsterName} hat ", _monster.MonsterColor);
+            ConsoleWriteColor(_actualDamage.ToString(), damageColor);
+            ConsoleWriteColorLine(" Schaden bekommen!", _monster.MonsterColor);
         }
         public void StartGame()
         {
@@ -86,12 +95,18 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public void PrintInstructions()
         {
             Console.WriteLine("Willkommen bei dieser kleinen Monster Kampf Simulation!");
-            Console.WriteLine("Im folgenden definierst du die folgenden Werte für beide Monster!");
-            Console.WriteLine("HP = Lebenspunkte");
-            Console.WriteLine("AP = Angriffspunkte");
-            Console.WriteLine("DP = Verteidigungspunkte");
-            Console.WriteLine("S = Geschwindigkeit");
-            Console.WriteLine("Sollten beide Monster gleich viel Geschwindigkeit haben, beginnt das erste welches du erstellt hast.");
+            Console.WriteLine("Im folgenden werden 6 Zahlen für das Monster ausgewürfelt!");
+            Console.WriteLine(" ");
+            Console.WriteLine("Die Werte sind Stärke, Geschicklichkeit, Konstitution, Intelligenz, Weisheit und Charisma!");
+            Console.WriteLine("Du darfst diese gewürfelten Zahlen dann beliebig auf diese Werte verteilen!");
+            Console.WriteLine(" ");
+            Console.WriteLine("Jede Monsterrasse hat einen Hauptwert:");
+            Console.WriteLine("Ork & Troll = Stärke");
+            Console.WriteLine("Goblin & Zentaur = Geschicklichkeit");
+            Console.WriteLine("Mindflayer = Intelligenz");
+            Console.WriteLine("Hag = Weisheit");
+            Console.WriteLine("Lich = Charisma");
+            Console.WriteLine(" ");
             Console.WriteLine("Drücke nun eine beliebige Taste um zu beginnen!");
             Console.ReadKey();
             Console.Clear();
@@ -102,17 +117,17 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         {
             Console.WriteLine($"Der Wert muss zwischen {_min} und {_max} liegen!");
         }
-        private void PrintHealSkill()
+        private void PrintHealSkill(Monster _monster)
         {
-            Console.WriteLine("Troll benutzt Regeneration!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} benutzt Regeneration!", _monster.MonsterColor);
         }
-        private void PrintDodgeSkill()
+        private void PrintDodgeSkill(Monster _monster)
         {
-            Console.WriteLine("Der Goblin ist ausgewichen!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} ist ausgewichen!", _monster.MonsterColor);
         }
-        private void PrintCriticalSkill()
+        private void PrintCriticalSkill(Monster _monster)
         {
-            Console.WriteLine("Der Ork landet einen kritischen Treffer!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} landet einen kritischen Treffer!", _monster.MonsterColor);
         }
 
         public void RegisterInput(Input _userInput)
@@ -166,52 +181,69 @@ namespace LL_MonsterKampfSimulatorDNDSystem
                     break;
                 case Hag hag:
                     hag.ActivateMirrorImageSkill += PrintMirrorImageSkill;
+                    hag.MirrorImageHit += PrintMirrorImageHit;
                     break;
                 case Lich lich:
                     lich.ActivateReviveSkill += PrintReviveSkill;
                     lich.ActivateCurseSkill += PrintCurseSkill;
+                    lich.CurseEffectPrint += PrintCurseEffect;
                     break;
             }
         }
 
-        private void PrintCurseSkill()
+        private void PrintCurseEffect(Monster _monster)
         {
-            Console.WriteLine("Der untote Magier verflucht sein Opfer!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} reduziert den erhaltenen Schaden um die Hälfte, da der Angreifer verflucht ist!", _monster.MonsterColor);
         }
 
-        private void PrintReviveSkill()
+        private void PrintMirrorImageHit(Hag _monster)
         {
-            Console.WriteLine("Der untote Magier belebt sich wieder!");
+            ConsoleWriteColorLine("Es wurde eins der Spiegelbilder getroffen!", _monster.MonsterColor);
+            ConsoleWriteColorLine($"Es sind noch {_monster.CurrentMirrorImages} vorhanden!", _monster.MonsterColor);
         }
 
-        private void PrintMirrorImageSkill()
+        private void PrintCurseSkill(Monster _monster)
         {
-            Console.WriteLine("Die Vettel benutzt den Zauber 'Spiegelbild'!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} verflucht sein Opfer!", _monster.MonsterColor);
         }
 
-        private void PrintGrappleSkill()
+        private void PrintReviveSkill(Monster _monster)
         {
-            Console.WriteLine("Der Mindflayer ergreift sein Opfer und hält es fest!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} belebt sich wieder!", _monster.MonsterColor);
         }
 
-        private void PrintDrainSkill()
+        private void PrintMirrorImageSkill(Monster _monster, string _spellName)
         {
-            Console.WriteLine("Der Mindflayer entzieht seinem Opfer Kraft!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} benutzt den Zauber '{_spellName}'!", _monster.MonsterColor);
         }
 
-        private void PrintKickSkill()
+        private void PrintGrappleSkill(Monster _monster)
         {
-            Console.WriteLine("Der Zentaur konternt mit einem Tritt");
+            ConsoleWriteColorLine($"{_monster.MonsterName} ergreift sein Opfer und hält es fest!", _monster.MonsterColor);
+        }
+
+        private void PrintDrainSkill(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} entzieht seinem Opfer Kraft!", _monster.MonsterColor);
+        }
+
+        private void PrintKickSkill(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} konternt mit einem Tritt", _monster.MonsterColor);
         }
 
         private void PrintDamageReduction(float _armorValue, Monster _monster)
         {
-            Console.WriteLine($"Der {_monster.MonsterName} verhindert {_armorValue} an Schaden!");
+            ConsoleWriteColor($"{_monster.MonsterName} verhindert ", _monster.MonsterColor);
+            ConsoleWriteColor(_armorValue.ToString(), armorColor);
+            ConsoleWriteColorLine(" Punkte an Schaden!", _monster.MonsterColor);
         }
 
         private void PrintDamageCalculation(float _actualDamage, Monster _monster)
         {
-            Console.WriteLine($"Der {_monster.MonsterName} kommt auf einen Gesamtwert von {_actualDamage} Schaden!");
+            ConsoleWriteColor($"{_monster.MonsterName} kommt auf einen Gesamtwert von ", _monster.MonsterColor);
+            ConsoleWriteColor(_actualDamage.ToString(), damageColor);
+            ConsoleWriteColorLine(" Punkten an Schaden!", _monster.MonsterColor);
         }
 
         private void PrintDiceRollingAnim(float _rolledValue, Monster _monster)
@@ -224,7 +256,25 @@ namespace LL_MonsterKampfSimulatorDNDSystem
                 Thread.Sleep(50);
             }
             Console.Clear();
-            Console.WriteLine($"Der {_monster.MonsterName} hat eine {_rolledValue} gewürfelt!");
+            Console.WriteLine($"{_monster.MonsterName} hat eine {_rolledValue} gewürfelt!");
+        }
+
+        public void PrintEndGameDraw()
+        {
+            Console.WriteLine("Das Spiel hat in einem Unentschieden geendet, da die maximale Anzahl an Runden erreicht wurde!");
+        }
+
+        public static void ConsoleWriteColor(string _output, ConsoleColor _color)
+        {
+            ConsoleColor currentColor = Console.ForegroundColor;
+            Console.ForegroundColor = _color;
+            Console.Write(_output);
+            Console.ForegroundColor = currentColor;
+        }
+
+        public static void ConsoleWriteColorLine(string _output, ConsoleColor _color)
+        {
+            ConsoleWriteColor(_output + "\n", _color);
         }
     }
 }

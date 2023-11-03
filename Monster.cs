@@ -92,7 +92,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             charisma = _charisma;
             maxDiceValue = _maxDiceValue;
             initiative = _dexterity;
-            usedAttackDiceAmount = 8;
+            usedAttackDiceAmount = 5;
         }
         public virtual void Attack(Monster _creatureToHit)
         {

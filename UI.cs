@@ -64,8 +64,14 @@
 
         public void PrintEndGame(Monster _winningMonster, float _roundCount)
         {
-            //Console.Clear();
-            ConsoleWriteColorLine($"{_winningMonster.MonsterName} hat nach {_roundCount} Runden gewonnen!", _winningMonster.MonsterColor);
+            if (_winningMonster.BossRace != Game.EBossRace.Beholder)
+            {
+                ConsoleWriteColorLine($"{_winningMonster.MonsterName} hat nach {_roundCount} Runden gewonnen!", _winningMonster.MonsterColor);
+            }
+            else
+            {
+                ConsoleWriteColorLine($"Das Monster hat {_roundCount} Runden gegen den Beholder überlebt bevor es kläglich und einsam gestorben ist!", _winningMonster.MonsterColor);
+            }
         }
 
         public void PrintHP(Monster _monster)

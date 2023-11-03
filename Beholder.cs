@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LL_MonsterKampfSimulatorDNDSystem
 {
@@ -16,6 +17,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public Action<Monster> ActivateCharmRay;
 
         private List<Action<Monster>> possibleAttacks = new List<Action<Monster>>();
+        private float phase2Threshhold = 3;
 
         /* NOTES for  boss skills:
             [DONE]Charm Ray = reduce damage value
@@ -50,7 +52,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         }
         public override void Attack(Monster _creatureToHit)
         {
-            var attackChoice = random.Next(0,possibleAttacks.Count);
+            this.hasAttacked = true;
+            var attackChoice = random.Next(0, possibleAttacks.Count);
             possibleAttacks[attackChoice].Invoke(_creatureToHit);
         }
         public override void TakeDamage(float _damageTaken, Monster _attackingMonster, bool _isCritical = false)
@@ -102,7 +105,16 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 
         private void DamageRay(Monster _creatureToHit, int _diceAmount)
         {
-            var damage = MathF.Max(0, RollMonsterDice(_diceAmount, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+            float damage;
+            if (Game.RoundCount <= phase2Threshhold)
+            {
+                damage = MathF.Max(0, RollMonsterDice(_diceAmount / 2, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+            }
+            else
+            {
+                damage = MathF.Max(0, RollMonsterDice(_diceAmount, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+                
+            }
             DamageCalculationPrint.Invoke(damage, this);
             _creatureToHit.TakeDamage(damage, this);
         }

@@ -110,7 +110,6 @@
         private void GameBossFight(Monster _survivingMonster, Monster _boss)
         {
             roundCount = 0;
-            //bossFight = true;
             _survivingMonster.HealToFull();
             while (bossFight)
             {

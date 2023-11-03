@@ -28,7 +28,7 @@
 
         private Random random = new Random();
         private int bossTriggerChance;
-        private int bossTriggerThreshold = 10;
+        private int bossTriggerThreshold = 5;
 
         public enum EMonsterRace
         {

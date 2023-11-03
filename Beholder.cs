@@ -1,22 +1,31 @@
-﻿namespace LL_MonsterKampfSimulatorDNDSystem
+﻿using System.Runtime.CompilerServices;
+
+namespace LL_MonsterKampfSimulatorDNDSystem
 {
     internal class Beholder : Monster
     {
         Random random = new Random();
-        private float maxHP;
         private float baseArmor = 0;
+        public Action<Monster> ActivateParalysingRay;
+        public Action<Monster> ActivateEnervationRay;
+        public Action<Monster> ActivateDisintegrationRay;
+        public Action<Monster> ActivateDeathRay;
+        public Action<Monster> ActivatePetrificationRay;
+        public Action<Monster> ActivateSlowRay;
+        public Action<Monster> ActivateFearRay;
+        public Action<Monster> ActivateCharmRay;
+
+        private List<Action<Monster>> possibleAttacks = new List<Action<Monster>>();
 
         /* NOTES for  boss skills:
-            Charm Ray = ??
-            Paralyzing = Stun for one round
-            Fear Ray = ?? disadvantage on attack rolls?
-            Slowing Ray = can only basic attack?
-            enervation Ray = Big boom 
-            telekinetic ray = ?? 
-            sleep ray = stunned till hit, hit does double damage?
-            petrification ray = dies in 3 rounds?
-            disintegration ray = really big boom
-            death ray = medium big boom
+            [DONE]Charm Ray = reduce damage value
+            [DONE]Paralyzing = Stun for one round
+            [DONE]Fear Ray =  can only basic attack
+            [DONE]Slowing Ray = Disadvatnage on attack rolls
+            [DONE]enervation Ray = Big boom 
+            [DONE]petrification ray = dies in 3 rounds?
+            [DONE]disintegration ray = really big boom
+            [DONE]death ray = medium big boom
 
         */
 
@@ -29,30 +38,21 @@
             mainUsedStatValue = _intelligence;
             armor = baseArmor;
             monsterColor = ConsoleColor.DarkRed;
-        }
+            possibleAttacks.Add(ParalysingRay);
+            possibleAttacks.Add(EnervationRay);
+            possibleAttacks.Add(DisintegrationRay);
+            possibleAttacks.Add(DeathRay);
+            possibleAttacks.Add(PetrificationRay);
+            possibleAttacks.Add(SlowingRay);
+            possibleAttacks.Add(FearRay);
+            possibleAttacks.Add(CharmRay);
 
-        //TODO: Implement all rays
+        }
         public override void Attack(Monster _creatureToHit)
         {
-            var chooseRay = random.Next(1, 5);
-            switch (chooseRay)
-            {
-                case 1:
-                    ParalysingRay(_creatureToHit);
-                    break;
-                case 2:
-                    EnervationRay(_creatureToHit);
-                    break;
-                case 3:
-                    DisintegrationRay(_creatureToHit);
-                    break;
-                case 4:
-                    DeathRay(_creatureToHit);
-                    break;
-            }
+            var attackChoice = random.Next(0,possibleAttacks.Count);
+            possibleAttacks[attackChoice].Invoke(_creatureToHit);
         }
-
-        //TODO: DamageRays => Method with dice amount parameter
         public override void TakeDamage(float _damageTaken, Monster _attackingMonster, bool _isCritical = false)
         {
             base.TakeDamage(_damageTaken, _attackingMonster);
@@ -60,49 +60,51 @@
 
         private void ParalysingRay(Monster _creatureToHit)
         {
+            ActivateParalysingRay.Invoke(this);
             _creatureToHit.GetStunned();
         }
         private void EnervationRay(Monster _creatureToHit)
         {
-            var damage = MathF.Max(0, RollMonsterDice(2, maxDiceValue) + CalculateModifier(mainUsedStatValue));
-            DamageCalculationPrint.Invoke(damage, this);
-            _creatureToHit.TakeDamage(damage, this);
+            ActivateEnervationRay.Invoke(this);
+            DamageRay(_creatureToHit, 2);
         }
         private void DisintegrationRay(Monster _creatureToHit)
         {
-            var damage = MathF.Max(0, RollMonsterDice(8, maxDiceValue) + CalculateModifier(mainUsedStatValue));
-            DamageCalculationPrint.Invoke(damage, this);
-            _creatureToHit.TakeDamage(damage, this);
+            ActivateDisintegrationRay.Invoke(this);
+            DamageRay(_creatureToHit, 8);
         }
         private void DeathRay(Monster _creatureToHit)
         {
-            var damage = MathF.Max(0, RollMonsterDice(4, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+            ActivateDeathRay.Invoke(this);
+            DamageRay(_creatureToHit, 6);
+        }
+        private void PetrificationRay(Monster _creatureToHit)
+        {
+            ActivatePetrificationRay.Invoke(this);
+            _creatureToHit.StartPetrify();
+            possibleAttacks.Remove(PetrificationRay);
+        }
+        private void SlowingRay(Monster _creatureToHit)
+        {
+            ActivateSlowRay.Invoke(this);
+            _creatureToHit.SetDisadvantage();
+        }
+        private void FearRay(Monster _creatureToHit)
+        {
+            ActivateFearRay.Invoke(this);
+            _creatureToHit.SetFear();
+        }
+        private void CharmRay(Monster _creatureToHit)
+        {
+            ActivateCharmRay.Invoke(this);
+            _creatureToHit.SetCharm();
+        }
+
+        private void DamageRay(Monster _creatureToHit, int _diceAmount)
+        {
+            var damage = MathF.Max(0, RollMonsterDice(_diceAmount, maxDiceValue) + CalculateModifier(mainUsedStatValue));
             DamageCalculationPrint.Invoke(damage, this);
             _creatureToHit.TakeDamage(damage, this);
-        }
-        private void PlaceHolderRay5(Monster _creatureToHit)
-        {
-
-        }
-        private void PlaceHolderRay6(Monster _creatureToHit)
-        {
-
-        }
-        private void PlaceHolderRay7(Monster _creatureToHit)
-        {
-
-        }
-        private void PlaceHolderRay8(Monster _creatureToHit)
-        {
-
-        }
-        private void PlaceHolderRay9(Monster _creatureToHit)
-        {
-
-        }
-        private void PlaceHolderRay10(Monster _creatureToHit)
-        {
-
         }
     }
 }

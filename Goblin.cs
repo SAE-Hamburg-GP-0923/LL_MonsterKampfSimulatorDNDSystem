@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace LL_MonsterKampfSimulatorDNDSystem
+﻿namespace LL_MonsterKampfSimulatorDNDSystem
 {
     internal class Goblin : Monster
     {
@@ -16,6 +13,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             mainUsedStatValue = _dexterity;
             armor = baseArmor;
             monsterColor = ConsoleColor.DarkYellow;
+            maxHP = hp;
         }
         public override void Attack(Monster _creatureToHit)
         {

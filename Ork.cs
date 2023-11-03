@@ -15,12 +15,13 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             hp = base.RollMonsterHP(4, 10, _constitution);
             armor = baseArmor;
             monsterColor = ConsoleColor.Green;
+            maxHP = hp;
         }
 
         public override void Attack(Monster _creatureToHit)
         {
             int triggerChance = random.Next(1, 21);
-            if (triggerChance == 1 && !isStunned)
+            if (triggerChance == 1 && !isStunned && !isFeared)
             {
                 if (!hasAttacked) hasAttacked = true;
                 ActivateCriticalSkill.Invoke(this);

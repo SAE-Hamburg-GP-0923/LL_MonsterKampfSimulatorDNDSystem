@@ -18,6 +18,9 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 
             }
         }
+
+        protected float maxHP;
+        public float MaxHP => maxHP;
         protected float strength;
         public float Strength => strength;
         protected float dexterity;
@@ -40,7 +43,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         protected ConsoleColor monsterColor;
         public ConsoleColor MonsterColor => monsterColor;
 
-        protected int rolledValue;
+        protected float rolledValue;
         protected int maxDiceValue;
         protected float mainUsedStatValue;
         public float MainUsedStatValue => mainUsedStatValue;
@@ -55,10 +58,25 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public Action<float, Monster> PrintDiceRollingAnim;
         public Action<float, Monster> DamageCalculationPrint;
         public Action<float, Monster> DamageReducedPrint;
+        public Action<Monster> PrintIsStunned;
+        public Action<Monster, int> PrintPetrificationState;
+        public Action<Monster> PrintIsPetrified;
+        public Action<Monster> PrintIsFeared;
+        public Action<Monster> PrintIsCharmed;
+
+        protected int petrifiedCounter;
+        public int PetrifiedCounter => petrifiedCounter;
+        private bool startPetrified;
+        public bool StartPetrified => startPetrified;
 
         private bool isCreated;
         protected bool hasAttacked;
         protected bool isStunned;
+        protected bool hasDisadvantage;
+        protected bool isFeared;
+        protected bool isCharmed;
+
+        private int maxPetrifiedCount = 5;
         public bool HasAttacked => hasAttacked;
 
         public Monster(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
@@ -74,16 +92,39 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         }
         public virtual void Attack(Monster _creatureToHit)
         {
+            if (startPetrified)
+            {
+                petrifiedCounter++;
+                PrintPetrificationState.Invoke(this, maxPetrifiedCount);
+            }
+            if (petrifiedCounter >= maxPetrifiedCount)
+            {
+                HP = 0;
+                PrintIsPetrified.Invoke(this);
+                return;
+            }
             if (isStunned)
             {
-                RemoveStunned();
+                if (isStunned) PrintIsStunned.Invoke(this);
+                RemoveConditions();
             }
             else
             {
+                RemoveConditions();
                 if (!hasAttacked) hasAttacked = true;
                 var damage = MathF.Max(0, RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
-                DamageCalculationPrint.Invoke(damage, this);
-                _creatureToHit.TakeDamage(damage, this);
+                if (isCharmed)
+                {
+                    PrintIsCharmed.Invoke(this);
+                    DamageCalculationPrint.Invoke(MathF.Floor(damage / 2), this);
+                    _creatureToHit.TakeDamage(MathF.Floor(damage / 2) , this);
+                    isCharmed = false;
+                }
+                else
+                {
+                    DamageCalculationPrint.Invoke(damage, this);
+                    _creatureToHit.TakeDamage(damage, this);
+                }
             }
         }
 
@@ -96,12 +137,20 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             HP = MathF.Max(0, HP - actualDamage);
         }
 
-        public int RollMonsterDice(int _diceAmount, int _maxDiceValue)
+        public float RollMonsterDice(int _diceAmount, int _maxDiceValue)
         {
             rolledValue = 0;
             for (int i = 0; i < _diceAmount; i++)
             {
-                rolledValue += monsterDice.Next(1, _maxDiceValue + 1);
+                if (hasDisadvantage)
+                {
+                    rolledValue += MathF.Min(monsterDice.Next(1, _maxDiceValue + 1), monsterDice.Next(1, _maxDiceValue + 1));
+                    hasDisadvantage = false;
+                }
+                else
+                {
+                    rolledValue += monsterDice.Next(1, _maxDiceValue + 1);
+                }
                 if (isCreated && Game.ShowDiceRolling) PrintDiceRollingAnim.Invoke(rolledValue, this);
             }
             return rolledValue;
@@ -133,9 +182,32 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             isStunned = true;
         }
 
-        public void RemoveStunned()
+        public void RemoveConditions()
         {
             isStunned = false;
+            isFeared = false;
+        }
+
+        public void HealToFull()
+        {
+            hp = maxHP;
+        }
+        public void StartPetrify()
+        {
+            startPetrified = true;
+        }
+
+        public void SetDisadvantage()
+        {
+            hasDisadvantage = true;
+        }
+        public void SetFear()
+        {
+            isFeared = true;
+        }
+        public void SetCharm()
+        {
+            isCharmed = true;
         }
     }
 }

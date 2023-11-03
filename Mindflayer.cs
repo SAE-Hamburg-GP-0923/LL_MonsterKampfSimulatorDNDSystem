@@ -16,11 +16,12 @@
             mainUsedStatValue = _intelligence;
             armor = baseArmor;
             monsterColor = ConsoleColor.Magenta;
+            maxHP = hp;
         }
 
         public override void Attack(Monster _creatureToHit)
         {
-            if (hasGrappledEnemy && !isStunned)
+            if (hasGrappledEnemy && !isStunned && !isFeared)
             {
                 DrainStat(_creatureToHit);
                 hasGrappledEnemy = false;
@@ -29,7 +30,7 @@
             {
                 base.Attack(_creatureToHit);
                 var triggerChance = random.Next(1, 21);
-                if (triggerChance <= 6)
+                if (triggerChance <= 6 && !isFeared)
                 {
                     ActivateGrappleSkill.Invoke(this);
                     hasGrappledEnemy = true;

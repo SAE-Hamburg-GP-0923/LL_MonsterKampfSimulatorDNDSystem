@@ -14,6 +14,7 @@
             mainUsedStatValue = _dexterity;
             armor = baseArmor;
             monsterColor = ConsoleColor.Gray;
+            maxHP = hp;
         }
         public override void Attack(Monster _creatureToHit)
         {

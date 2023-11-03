@@ -5,7 +5,6 @@ namespace LL_MonsterKampfSimulatorDNDSystem
     {
         Random random = new Random();
         private float baseArmor = 0;
-        private float maxHP;
         public Action<Monster> ActivateReviveSkill;
         public Action<Monster> ActivateCurseSkill;
         public Action<Monster> CurseEffectPrint;
@@ -24,7 +23,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public override void Attack(Monster _creatureToHit)
         {
             var triggerChance = random.Next(1, 21);
-            if (!cursedEnemy && triggerChance <= 5 && !isStunned)
+            if (!cursedEnemy && triggerChance <= 5 && !isStunned && !isFeared)
             {
                 ActivateCurseSkill.Invoke(this);
                 cursedEnemy = true;

@@ -32,7 +32,7 @@
         public void PrintChooseIntelligence()
         {
             Console.Clear();
-            
+
             Console.WriteLine("Bitte gebe die Zahl ein, welche du für deine Intelligenz benutzten willst!");
         }
         private void PrintChooseCharisma()
@@ -158,6 +158,11 @@
             _monster.PrintDiceRollingAnim += PrintDiceRollingAnim;
             _monster.DamageCalculationPrint += PrintDamageCalculation;
             _monster.DamageReducedPrint += PrintDamageReduction;
+            _monster.PrintIsStunned += PrintIsStunned;
+            _monster.PrintPetrificationState += PrintPetrificationState;
+            _monster.PrintIsPetrified += PrintIsPetrified;
+            _monster.PrintIsFeared += PrintIsFeared;
+            _monster.PrintIsCharmed += PrintIsCharmed;
             switch (_monster)
             {
                 case Ork ork:
@@ -185,7 +190,82 @@
                     lich.ActivateCurseSkill += PrintCurseSkill;
                     lich.CurseEffectPrint += PrintCurseEffect;
                     break;
+                case Beholder beholder:
+                    beholder.ActivateParalysingRay += PrintParalysingRay;
+                    beholder.ActivateEnervationRay += PrintEnervationRay;
+                    beholder.ActivateDisintegrationRay += PrintDisintegrationRay;
+                    beholder.ActivateDeathRay += PrintDeathRay;
+                    beholder.ActivatePetrificationRay += PrintPetrificationRay;
+                    beholder.ActivateSlowRay += PrintSlowRay;
+                    beholder.ActivateFearRay += PrintFearRay;
+                    beholder.ActivateCharmRay += PrintCharmRay;
+                    break;
             }
+        }
+
+        private void PrintCharmRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} betört seinen Gegner mit einem schicken Augenblinzeln!", _monster.MonsterColor);
+        }
+
+        private void PrintIsCharmed(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} ist vom Gegner betört und macht nur halben Schaden!", _monster.MonsterColor);
+        }
+
+        private void PrintIsFeared(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} hat Angst und kann nur seinen normalen Angriff benutzen!", _monster.MonsterColor);
+        }
+
+        private void PrintFearRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} verängstigt seinen Gegner!", _monster.MonsterColor);
+        }
+
+        private void PrintSlowRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} hat seinen Gegner verlangsamt!", _monster.MonsterColor);
+        }
+
+        private void PrintIsPetrified(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} wurde komplett Versteinert und ist tot!", _monster.MonsterColor);
+        }
+
+        private void PrintPetrificationState(Monster _monster, int _maxPetrifiedCount)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} hat noch {_maxPetrifiedCount - _monster.PetrifiedCounter} Runden bis zur vollständigen Versteinerung!", _monster.MonsterColor);
+        }
+
+        private void PrintPetrificationRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} beginnt seinen Gegner zu versteinern!", _monster.MonsterColor);
+        }
+
+        private void PrintEnervationRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} schießt einen Strahl negativer Energie auf seinen Gegner!", _monster.MonsterColor);
+        }
+
+        private void PrintDisintegrationRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} nutzt seinen stärksten Angriff!", _monster.MonsterColor);
+        }
+
+        private void PrintDeathRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} trifft seinen Gegner mit dunkler Magie!", _monster.MonsterColor);
+        }
+
+        private void PrintParalysingRay(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} betäubt seinen Gegner für eine Runde!", _monster.MonsterColor);
+        }
+
+        private void PrintIsStunned(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} ist betäubt und kann nicht angreifen!", _monster.MonsterColor);
         }
 
         private void PrintCurseEffect(Monster _monster)
@@ -260,6 +340,14 @@
         {
             Console.WriteLine("Das Spiel hat in einem Unentschieden geendet, da die maximale Anzahl an Runden erreicht wurde!");
         }
+        public void StartBossFight(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} hat zwar überlebt, doch aus den Schatten schiebt sich ein gewaltiges Wesen!", _monster.MonsterColor);
+            ConsoleWriteColorLine($"Ein Boss erscheint! Zur Sicherheit, trinkt {_monster.MonsterName} alle seine Heiltränke um wieder mit vollem Leben zu starten!", _monster.MonsterColor);
+            ConsoleWriteColorLine($"Drücke nun eine beliebige Taste um den finalen Kampf zu beginnen!", _monster.MonsterColor);
+            Console.ReadKey();
+            Console.Clear();
+        }
 
         public static void ConsoleWriteColor(string _output, ConsoleColor _color)
         {
@@ -273,5 +361,6 @@
         {
             ConsoleWriteColor(_output + "\n", _color);
         }
+
     }
 }

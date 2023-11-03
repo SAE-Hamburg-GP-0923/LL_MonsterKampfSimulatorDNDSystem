@@ -14,22 +14,20 @@
         private delegate void ChangeStatHandler(Monster _monsterToChangeStatsOn);
         private Action startGame;
         private Action endGameDraw;
+        private Action<Monster> startBossFight;
         private int roundCount;
+        private int maxRoundCounter;
 
         public List<float> RolledStats = new List<float>();
         private Random dice = new Random();
         private int rolledGenericValue;
 
-        private int maxRoundCounter;
 
         public static bool ShowDiceRolling;
+
         private Random random = new Random();
         private int bossTriggerChance;
-
-        /*
-        Ideas:
-        Beholder inklusive all rays (boss?)
-         */
+        private int bossTriggerThreshold = 10;
 
         public enum EMonsterRace
         {
@@ -61,11 +59,6 @@
             ShowDiceRolling = _showDiceRolling;
             maxRoundCounter = _maxRoundCounter;
         }
-
-        //TODO: -- Possible Features --
-        // Karmic Dice
-
-        //TODO: debug function to skip to boss
         public void GameInit()
         {
             bossTriggerChance = random.Next(1, 11);
@@ -79,6 +72,7 @@
             monster2 = CreateMonster();
             text.RegisterMonsters(monster2);
             startGame += text.StartGame;
+            startBossFight += text.StartBossFight;
             endGamePrint += text.PrintEndGame;
             endGameDraw += text.PrintEndGameDraw;
             if (monster1.Initiative >= monster2.Initiative)
@@ -114,9 +108,21 @@
 
         private void GameBossFight(Monster _survivingMonster, Monster _boss)
         {
+            roundCount = 0;
+            //bossFight = true;
+            _survivingMonster.HealToFull();
             while (bossFight)
             {
-
+                roundCount++;
+                _survivingMonster.Attack(_boss);
+                CheckVictoryCondition(_survivingMonster, _boss);
+                if (!bossFight) break;
+                if (ShowDiceRolling) Console.ReadKey();
+                Console.WriteLine(" ");
+                _boss.Attack(_survivingMonster);
+                CheckVictoryCondition(_survivingMonster, _boss);
+                Console.ReadKey();
+                Console.Clear();
             }
         }
 
@@ -124,28 +130,34 @@
         {
             if (_firstMonster.HP <= 0 || _firstMonster.MainUsedStatValue <= 0)
             {
-                if (bossTriggerChance <= 2)
+                if (bossTriggerChance <= bossTriggerThreshold && !bossFight)
                 {
                     gameRunning = false;
                     bossFight = true;
                     Monster boss = new Beholder(10, 14, 18, 17, 15, 17, 10);
-                    // bossfightstart.invoke();
-                    // GameBossFight(_secondMonster, beholder);
+                    text.RegisterMonsters(boss);
+                    startBossFight.Invoke(_secondMonster);
+                    GameBossFight(_secondMonster, boss);
+                    return;
                 }
                 gameRunning = false;
+                if (bossFight) bossFight = false;
                 endGamePrint.Invoke(_secondMonster, roundCount);
             }
             else if (_secondMonster.HP <= 0 || _secondMonster.MainUsedStatValue <= 0)
             {
-                if (bossTriggerChance <= 2)
+                if (bossTriggerChance <= bossTriggerThreshold && !bossFight)
                 {
                     gameRunning = false;
                     bossFight = true;
-                    // Monster beholder = new Monster();
-                    // bossfightstart.invoke();
-                    // GameBossFight(_firstMonster, beholder);
+                    Monster boss = new Beholder(10, 14, 18, 17, 15, 17, 10);
+                    text.RegisterMonsters(boss);
+                    startBossFight.Invoke(_firstMonster);
+                    GameBossFight(_firstMonster, boss);
+                    return;
                 }
                 gameRunning = false;
+                if (bossFight) bossFight = false;
                 endGamePrint.Invoke(_firstMonster, roundCount);
             }
         }

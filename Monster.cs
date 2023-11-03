@@ -65,6 +65,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public Action<Monster> PrintIsPetrified;
         public Action<Monster> PrintIsFeared;
         public Action<Monster> PrintIsCharmed;
+        public Action<Monster> PrintIsSlowed;
 
         protected int petrifiedCounter;
         public int PetrifiedCounter => petrifiedCounter;
@@ -114,14 +115,15 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             }
             else
             {
+                if (isFeared) PrintIsFeared.Invoke(this);
                 RemoveConditions();
                 if (!hasAttacked) hasAttacked = true;
-                var damage = MathF.Max(0, RollMonsterDice(MathF.Max(usedAttackDiceAmount - Game.RoundCount,1), maxDiceValue) + CalculateModifier(mainUsedStatValue));
+                var damage = MathF.Max(0, RollMonsterDice(MathF.Max(usedAttackDiceAmount - Game.RoundCount, 1), maxDiceValue) + CalculateModifier(mainUsedStatValue));
                 if (isCharmed)
                 {
                     PrintIsCharmed.Invoke(this);
                     DamageCalculationPrint.Invoke(MathF.Floor(damage / 2), this);
-                    _creatureToHit.TakeDamage(MathF.Floor(damage / 2) , this);
+                    _creatureToHit.TakeDamage(MathF.Floor(damage / 2), this);
                     isCharmed = false;
                 }
                 else
@@ -148,6 +150,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             {
                 if (hasDisadvantage)
                 {
+                    PrintIsSlowed.Invoke(this);
                     rolledValue += MathF.Min(monsterDice.Next(1, _maxDiceValue + 1), monsterDice.Next(1, _maxDiceValue + 1));
                     hasDisadvantage = false;
                 }

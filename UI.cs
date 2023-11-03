@@ -169,6 +169,7 @@
             _monster.PrintIsPetrified += PrintIsPetrified;
             _monster.PrintIsFeared += PrintIsFeared;
             _monster.PrintIsCharmed += PrintIsCharmed;
+            _monster.PrintIsSlowed += PrintIsSlowed;
             switch (_monster)
             {
                 case Ork ork:
@@ -207,6 +208,11 @@
                     beholder.ActivateCharmRay += PrintCharmRay;
                     break;
             }
+        }
+
+        private void PrintIsSlowed(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} ist verlangsamt und wüfelt daher mit Nachteil!", _monster.MonsterColor);
         }
 
         private void PrintCharmRay(Monster _monster)

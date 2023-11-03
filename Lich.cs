@@ -12,7 +12,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public Lich(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Lich";
-            hp = base.RollMonsterHP(4, 6, _constitution);
+            hp = base.RollMonsterHP(12, 6, _constitution);
             maxHP = hp;
             MonsterRace = Game.EMonsterRace.Lich;
             mainUsedStatValue = _wisdom;

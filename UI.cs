@@ -62,7 +62,7 @@
             Console.WriteLine("Nun gebe erneut alle Werte ein. Diesesmal für das zweite Monster!");
         }
 
-        public void PrintEndGame(Monster _winningMonster, int _roundCount)
+        public void PrintEndGame(Monster _winningMonster, float _roundCount)
         {
             //Console.Clear();
             ConsoleWriteColorLine($"{_winningMonster.MonsterName} hat nach {_roundCount} Runden gewonnen!", _winningMonster.MonsterColor);

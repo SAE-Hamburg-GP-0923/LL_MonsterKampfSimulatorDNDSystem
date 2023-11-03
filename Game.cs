@@ -9,13 +9,14 @@
         private Monster monster2;
         private Input userInput;
         private UI text;
-        private delegate void EndGamePrintHandler(Monster _winningMonster, int _roundCount);
+        private delegate void EndGamePrintHandler(Monster _winningMonster, float _roundCount);
         private event EndGamePrintHandler endGamePrint;
         private delegate void ChangeStatHandler(Monster _monsterToChangeStatsOn);
         private Action startGame;
         private Action endGameDraw;
         private Action<Monster> startBossFight;
-        private int roundCount;
+        private static float roundCount;
+        public static float RoundCount => roundCount;
         private int maxRoundCounter;
 
         public List<float> RolledStats = new List<float>();

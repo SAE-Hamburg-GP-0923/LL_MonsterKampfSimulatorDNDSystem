@@ -9,7 +9,7 @@
         {
             initiative = _dexterity * 2;
             monsterName = "Der Centaur";
-            hp = base.RollMonsterHP(4, 8, _constitution);
+            hp = base.RollMonsterHP(12, 8, _constitution);
             MonsterRace = Game.EMonsterRace.Centaur;
             mainUsedStatValue = _dexterity;
             armor = baseArmor;
@@ -55,7 +55,7 @@
             {
 
                 ActivateKickSkill.Invoke(this);
-                var damage = MathF.Max(0, RollMonsterDice(1, 4) + CalculateModifier(mainUsedStatValue));
+                var damage = MathF.Max(0, RollMonsterDice(MathF.Max(usedAttackDiceAmount - Game.RoundCount, 1), 4) + CalculateModifier(mainUsedStatValue));
                 DamageCalculationPrint.Invoke(damage, this);
                 _creatureToHit.TakeDamage(damage, this);
             }

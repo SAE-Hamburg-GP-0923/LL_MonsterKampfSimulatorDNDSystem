@@ -71,12 +71,12 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         private void DisintegrationRay(Monster _creatureToHit)
         {
             ActivateDisintegrationRay.Invoke(this);
-            DamageRay(_creatureToHit, 8);
+            DamageRay(_creatureToHit, 6);
         }
         private void DeathRay(Monster _creatureToHit)
         {
             ActivateDeathRay.Invoke(this);
-            DamageRay(_creatureToHit, 6);
+            DamageRay(_creatureToHit, 4);
         }
         private void PetrificationRay(Monster _creatureToHit)
         {

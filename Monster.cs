@@ -48,6 +48,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         protected float mainUsedStatValue;
         public float MainUsedStatValue => mainUsedStatValue;
         protected Random monsterDice = new Random();
+        protected float usedAttackDiceAmount;
+        public float UsedAttackDiceAmount => usedAttackDiceAmount;
 
         public Game.EMonsterRace MonsterRace;
         protected string monsterName;
@@ -76,7 +78,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         protected bool isFeared;
         protected bool isCharmed;
 
-        private int maxPetrifiedCount = 5;
+
+        private int maxPetrifiedCount = 10;
         public bool HasAttacked => hasAttacked;
 
         public Monster(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
@@ -89,6 +92,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             charisma = _charisma;
             maxDiceValue = _maxDiceValue;
             initiative = _dexterity;
+            usedAttackDiceAmount = 8;
         }
         public virtual void Attack(Monster _creatureToHit)
         {
@@ -112,7 +116,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             {
                 RemoveConditions();
                 if (!hasAttacked) hasAttacked = true;
-                var damage = MathF.Max(0, RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue));
+                var damage = MathF.Max(0, RollMonsterDice(MathF.Max(usedAttackDiceAmount - Game.RoundCount,1), maxDiceValue) + CalculateModifier(mainUsedStatValue));
                 if (isCharmed)
                 {
                     PrintIsCharmed.Invoke(this);
@@ -137,7 +141,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             HP = MathF.Max(0, HP - actualDamage);
         }
 
-        public float RollMonsterDice(int _diceAmount, int _maxDiceValue)
+        public float RollMonsterDice(float _diceAmount, int _maxDiceValue)
         {
             rolledValue = 0;
             for (int i = 0; i < _diceAmount; i++)

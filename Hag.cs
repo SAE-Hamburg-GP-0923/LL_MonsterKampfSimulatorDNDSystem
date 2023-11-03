@@ -13,7 +13,7 @@
         public Hag(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Die Hag";
-            hp = base.RollMonsterHP(4, 8, _constitution);
+            hp = base.RollMonsterHP(12, 8, _constitution);
             MonsterRace = Game.EMonsterRace.Hag;
             mainUsedStatValue = _wisdom;
             armor = baseArmor;

@@ -12,7 +12,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             monsterName = "Der Ork";
             mainUsedStatValue = _strength;
             MonsterRace = Game.EMonsterRace.Ork;
-            hp = base.RollMonsterHP(4, 10, _constitution);
+            hp = base.RollMonsterHP(12, 10, _constitution);
             armor = baseArmor;
             monsterColor = ConsoleColor.Green;
             maxHP = hp;
@@ -25,7 +25,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             {
                 if (!hasAttacked) hasAttacked = true;
                 ActivateCriticalSkill.Invoke(this);
-                var damage = MathF.Max(0, (RollMonsterDice(1, maxDiceValue) + CalculateModifier(mainUsedStatValue)) * 2);
+                var damage = MathF.Max(0, (RollMonsterDice(MathF.Max(usedAttackDiceAmount - Game.RoundCount, 1), maxDiceValue) + CalculateModifier(mainUsedStatValue)) * 2);
                 DamageCalculationPrint.Invoke(damage, this);
                 _creatureToHit.TakeDamage(damage, this);
             }

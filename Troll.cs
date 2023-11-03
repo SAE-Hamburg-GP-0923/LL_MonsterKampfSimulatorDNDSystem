@@ -10,7 +10,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         {
             monsterName = "Der Troll";
             MonsterRace = Game.EMonsterRace.Troll;
-            hp = base.RollMonsterHP(4, 12, _constitution);
+            hp = base.RollMonsterHP(12, 12, _constitution);
             mainUsedStatValue = _strength;
             armor = baseArmor;
             monsterColor = ConsoleColor.DarkGreen;

@@ -361,6 +361,7 @@
             Console.Clear();
         }
 
+        #region HelperFunc
         public static void ConsoleWriteColor(string _output, ConsoleColor _color)
         {
             ConsoleColor currentColor = Console.ForegroundColor;
@@ -373,6 +374,7 @@
         {
             ConsoleWriteColor(_output + "\n", _color);
         }
+        #endregion
 
     }
 }

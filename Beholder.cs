@@ -25,7 +25,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             [DONE]Fear Ray =  can only basic attack
             [DONE]Slowing Ray = Disadvatnage on attack rolls
             [DONE]enervation Ray = Big boom 
-            [DONE]petrification ray = dies in 3 rounds?
+            [DONE]petrification ray = dies in 10 rounds
             [DONE]disintegration ray = really big boom
             [DONE]death ray = medium big boom
 

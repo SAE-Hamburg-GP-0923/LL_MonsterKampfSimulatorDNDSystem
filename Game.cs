@@ -2,6 +2,7 @@
 {
     internal class Game
     {
+        #region Variables
         private bool debug;
         private bool gameRunning = true;
         private bool bossFight;
@@ -29,6 +30,8 @@
         private Random random = new Random();
         private int bossTriggerChance;
         private int bossTriggerThreshold = 5;
+
+        #endregion
 
         public enum EMonsterRace
         {

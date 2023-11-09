@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Student\\Desktop\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj": {}
+    "\\\\10.4.33.2\\GAME_Studentdata\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Student\\Desktop\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj": {
+    "\\\\10.4.33.2\\GAME_Studentdata\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Student\\Desktop\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj",
+        "projectUniqueName": "\\\\10.4.33.2\\GAME_Studentdata\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj",
         "projectName": "LL_MonsterKampfSimulatorDNDSystem",
-        "projectPath": "C:\\Users\\Student\\Desktop\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj",
+        "projectPath": "\\\\10.4.33.2\\GAME_Studentdata\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\LL_MonsterKampfSimulatorDNDSystem.csproj",
         "packagesPath": "C:\\Users\\Student\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Student\\Desktop\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\obj\\",
+        "outputPath": "\\\\10.4.33.2\\GAME_Studentdata\\LL_0923_TempProject\\MonsterKampfSimBonus\\LL_MonsterKampfSimulatorDNDSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Student\\AppData\\Roaming\\NuGet\\NuGet.Config",

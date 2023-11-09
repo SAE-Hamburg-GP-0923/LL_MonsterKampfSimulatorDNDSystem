@@ -120,17 +120,13 @@
         {
             Console.WriteLine($"Der Wert muss zwischen {_min} und {_max} liegen!");
         }
-        private void PrintHealSkill(Monster _monster)
+        private void PrintRemainingStats(List<float> _list)
         {
-            ConsoleWriteColorLine($"{_monster.MonsterName} benutzt Regeneration!", _monster.MonsterColor);
-        }
-        private void PrintDodgeSkill(Monster _monster)
-        {
-            ConsoleWriteColorLine($"{_monster.MonsterName} ist ausgewichen!", _monster.MonsterColor);
-        }
-        private void PrintCriticalSkill(Monster _monster)
-        {
-            ConsoleWriteColorLine($"{_monster.MonsterName} landet einen kritischen Treffer!", _monster.MonsterColor);
+            Console.WriteLine("Du hast noch folgende Werte zum Verteilen! : ");
+            foreach (var stat in _list)
+            {
+                Console.WriteLine(stat);
+            }
         }
 
         public void RegisterInput(Input _userInput)
@@ -147,14 +143,6 @@
             _userInput.printRemainingStats += PrintRemainingStats;
         }
 
-        private void PrintRemainingStats(List<float> _list)
-        {
-            Console.WriteLine("Du hast noch folgende Werte zum Verteilen! : ");
-            foreach (var stat in _list)
-            {
-                Console.WriteLine(stat);
-            }
-        }
 
 
         public void RegisterMonsters(Monster _monster)
@@ -290,7 +278,18 @@
             ConsoleWriteColorLine("Es wurde eins der Spiegelbilder getroffen!", _monster.MonsterColor);
             ConsoleWriteColorLine($"Es sind noch {_monster.CurrentMirrorImages} vorhanden!", _monster.MonsterColor);
         }
-
+        private void PrintHealSkill(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} benutzt Regeneration!", _monster.MonsterColor);
+        }
+        private void PrintDodgeSkill(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} ist ausgewichen!", _monster.MonsterColor);
+        }
+        private void PrintCriticalSkill(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} landet einen kritischen Treffer!", _monster.MonsterColor);
+        }
         private void PrintCurseSkill(Monster _monster)
         {
             ConsoleWriteColorLine($"{_monster.MonsterName} verflucht sein Opfer!", _monster.MonsterColor);
@@ -342,10 +341,10 @@
                 Random random = new Random();
                 Console.Clear();
                 Console.Write(random.Next(1, 20));
-                Thread.Sleep(50);
+                Thread.Sleep(80);
             }
             Console.Clear();
-            Console.WriteLine($"{_monster.MonsterName} hat eine {_rolledValue} gewürfelt!");
+            ConsoleWriteColorLine($"{_monster.MonsterName} hat eine {_rolledValue} gewürfelt!", _monster.MonsterColor);
         }
 
         public void PrintEndGameDraw()

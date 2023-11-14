@@ -4,8 +4,8 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 {
     internal class Troll : Monster
     {
-        public Action<Monster> ActivateHealSkill;
         private float baseArmor = 5;
+        public Action<Monster> ActivateHealSkill;
         public Troll(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Troll";

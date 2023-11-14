@@ -204,6 +204,12 @@
             return RolledStats;
         }
 
+        /// <summary>
+        /// Function to roll any dice amount of any value and return a the combined value
+        /// </summary>
+        /// <param name="_diceAmount"></param>
+        /// <param name="_maxDiceValue"></param>
+        /// <returns></returns>
         public int RollDice(int _diceAmount, int _maxDiceValue)
         {
             for (int i = 0; i < _diceAmount; i++)

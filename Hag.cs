@@ -4,12 +4,19 @@
     {
         Random random = new Random();
         private float baseArmor = 0;
+
+        #region Skills and skill variables
         private int currentMirrorImages;
         public int CurrentMirrorImages => currentMirrorImages;
         private int maxMirrorImages = 4;
+        private string mirrorImageName = "Spiegelbild";
+        #endregion
+
+        #region Actions
         public Action<Monster, string> ActivateMirrorImageSkill;
         public Action<Hag> MirrorImageHit;
-        private string mirrorImageName = "Spiegelbild";
+        #endregion
+
         public Hag(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Die Hag";

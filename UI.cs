@@ -2,14 +2,22 @@
 {
     internal class UI
     {
+        #region Fixed variables
         private ConsoleColor damageColor = ConsoleColor.Red;
         private ConsoleColor armorColor = ConsoleColor.Blue;
         private ConsoleColor hpColor = ConsoleColor.White;
+        #endregion
+        #region Print Inputs and Error
         public void PrintErrorMessage(float _min, float _max)
         {
             Console.Clear();
             Console.WriteLine("Bitte gebe einen vernünftigen Wert ein!");
             Console.WriteLine($"Alle Werte dürfen nur zwischen {_min} und {_max} liegen!");
+        }
+
+        public void PrintRangeInstruction(float _min, float _max)
+        {
+            Console.WriteLine($"Der Wert muss zwischen {_min} und {_max} liegen!");
         }
 
         public void PrintChooseStrength()
@@ -61,37 +69,22 @@
             Console.Clear();
             Console.WriteLine("Nun gebe erneut alle Werte ein. Diesesmal für das zweite Monster!");
         }
+        #endregion
 
-        public void PrintEndGame(Monster _winningMonster, float _roundCount)
-        {
-            if (_winningMonster.BossRace != Game.EBossRace.Beholder)
-            {
-                ConsoleWriteColorLine($"{_winningMonster.MonsterName} hat nach {_roundCount} Runden gewonnen!", _winningMonster.MonsterColor);
-            }
-            else
-            {
-                ConsoleWriteColorLine($"Das Monster hat {_roundCount} Runden gegen den Beholder überlebt bevor es kläglich und einsam gestorben ist!", _winningMonster.MonsterColor);
-            }
-        }
-
-        public void PrintHP(Monster _monster)
-        {
-            ConsoleWriteColor($"{_monster.MonsterName} hat noch ", _monster.MonsterColor);
-            ConsoleWriteColor(_monster.HP.ToString(), hpColor);
-            ConsoleWriteColorLine(" Leben!", _monster.MonsterColor);
-        }
-
-        public void PrintDamage(float _actualDamage, Monster _monster)
-        {
-            ConsoleWriteColor($"{_monster.MonsterName} hat ", _monster.MonsterColor);
-            ConsoleWriteColor(_actualDamage.ToString(), damageColor);
-            ConsoleWriteColorLine(" Schaden bekommen!", _monster.MonsterColor);
-        }
+        #region Print game logic
         public void StartGame()
         {
             Console.Clear();
             Console.WriteLine("Alle Werte sind in Ordnung! Drücke eine beliebige Taste zum beginnen der Simulation!");
             Console.WriteLine("Die Simulation basiert auf Runden! Um die nächste Runde auszuführen drücke eine beliebige Taste nachdem die aktuellen Lebenswerte erschienen sind!");
+            Console.ReadKey();
+            Console.Clear();
+        }
+        public void StartBossFight(Monster _monster)
+        {
+            ConsoleWriteColorLine($"{_monster.MonsterName} hat zwar überlebt, doch aus den Schatten schiebt sich ein gewaltiges Wesen!", _monster.MonsterColor);
+            ConsoleWriteColorLine($"Ein Boss erscheint! Zur Sicherheit, trinkt {_monster.MonsterName} alle seine Heiltränke um wieder mit vollem Leben zu starten!", _monster.MonsterColor);
+            ConsoleWriteColorLine($"Drücke nun eine beliebige Taste um den finalen Kampf zu beginnen!", _monster.MonsterColor);
             Console.ReadKey();
             Console.Clear();
         }
@@ -115,10 +108,34 @@
             Console.Clear();
 
         }
-
-        public void PrintRangeInstruction(float _min, float _max)
+        public void PrintEndGame(Monster _winningMonster, float _roundCount)
         {
-            Console.WriteLine($"Der Wert muss zwischen {_min} und {_max} liegen!");
+            if (_winningMonster.BossRace != Game.EBossRace.Beholder)
+            {
+                ConsoleWriteColorLine($"{_winningMonster.MonsterName} hat nach {_roundCount} Runden gewonnen!", _winningMonster.MonsterColor);
+            }
+            else
+            {
+                ConsoleWriteColorLine($"Das Monster hat {_roundCount} Runden gegen den Beholder überlebt bevor es kläglich und einsam gestorben ist!", _winningMonster.MonsterColor);
+            }
+        }
+        public void PrintEndGameDraw()
+        {
+            Console.WriteLine("Das Spiel hat in einem Unentschieden geendet, da die maximale Anzahl an Runden erreicht wurde!");
+        }
+
+        public void PrintHP(Monster _monster)
+        {
+            ConsoleWriteColor($"{_monster.MonsterName} hat noch ", _monster.MonsterColor);
+            ConsoleWriteColor(_monster.HP.ToString(), hpColor);
+            ConsoleWriteColorLine(" Leben!", _monster.MonsterColor);
+        }
+
+        public void PrintDamage(float _actualDamage, Monster _monster)
+        {
+            ConsoleWriteColor($"{_monster.MonsterName} hat ", _monster.MonsterColor);
+            ConsoleWriteColor(_actualDamage.ToString(), damageColor);
+            ConsoleWriteColorLine(" Schaden bekommen!", _monster.MonsterColor);
         }
         private void PrintRemainingStats(List<float> _list)
         {
@@ -128,7 +145,10 @@
                 Console.WriteLine(stat);
             }
         }
+        #endregion
 
+        #region Registration
+        // Two functions to register and subscribe all input and monster events with the UI
         public void RegisterInput(Input _userInput)
         {
             _userInput.printStep1 += PrintChooseStrength;
@@ -197,7 +217,9 @@
                     break;
             }
         }
+        #endregion
 
+        #region All skill prints
         private void PrintIsSlowed(Monster _monster)
         {
             ConsoleWriteColorLine($"{_monster.MonsterName} ist verlangsamt und wüfelt daher mit Nachteil!", _monster.MonsterColor);
@@ -333,7 +355,10 @@
             ConsoleWriteColor(_actualDamage.ToString(), damageColor);
             ConsoleWriteColorLine(" Punkten an Schaden!", _monster.MonsterColor);
         }
+        #endregion
 
+
+        #region HelperFunc
         private void PrintDiceRollingAnim(float _rolledValue, Monster _monster)
         {
             for (int i = 0; i < 6; i++)
@@ -346,21 +371,6 @@
             Console.Clear();
             ConsoleWriteColorLine($"{_monster.MonsterName} hat eine {_rolledValue} gewürfelt!", _monster.MonsterColor);
         }
-
-        public void PrintEndGameDraw()
-        {
-            Console.WriteLine("Das Spiel hat in einem Unentschieden geendet, da die maximale Anzahl an Runden erreicht wurde!");
-        }
-        public void StartBossFight(Monster _monster)
-        {
-            ConsoleWriteColorLine($"{_monster.MonsterName} hat zwar überlebt, doch aus den Schatten schiebt sich ein gewaltiges Wesen!", _monster.MonsterColor);
-            ConsoleWriteColorLine($"Ein Boss erscheint! Zur Sicherheit, trinkt {_monster.MonsterName} alle seine Heiltränke um wieder mit vollem Leben zu starten!", _monster.MonsterColor);
-            ConsoleWriteColorLine($"Drücke nun eine beliebige Taste um den finalen Kampf zu beginnen!", _monster.MonsterColor);
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        #region HelperFunc
         public static void ConsoleWriteColor(string _output, ConsoleColor _color)
         {
             ConsoleColor currentColor = Console.ForegroundColor;

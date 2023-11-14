@@ -4,6 +4,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 {
     internal class Monster
     {
+        #region variables
         protected float hp;
         public float HP
         {
@@ -55,6 +56,9 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         protected string monsterName;
         public Game.EBossRace BossRace;
         public string MonsterName => monsterName;
+        #endregion
+
+        #region actions
         public Action<float, Monster> DamagePrint;
         public Action<Monster> HPPrint;
         public Action<float, Monster> PrintDiceRollingAnim;
@@ -66,7 +70,9 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         public Action<Monster> PrintIsFeared;
         public Action<Monster> PrintIsCharmed;
         public Action<Monster> PrintIsSlowed;
+        #endregion
 
+        #region status effects
         protected int petrifiedCounter;
         public int PetrifiedCounter => petrifiedCounter;
         private bool startPetrified;
@@ -74,14 +80,15 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 
         private bool isCreated;
         protected bool hasAttacked;
+        public bool HasAttacked => hasAttacked;
         protected bool isStunned;
         protected bool hasDisadvantage;
         protected bool isFeared;
         protected bool isCharmed;
+        #endregion
 
-
+        // defines how many rounds are needed till a monster dies of petrification
         private int maxPetrifiedCount = 10;
-        public bool HasAttacked => hasAttacked;
 
         public Monster(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
         {
@@ -143,6 +150,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             HP = MathF.Max(0, HP - actualDamage);
         }
 
+        #region Monster math functions
         public float RollMonsterDice(float _diceAmount, int _maxDiceValue)
         {
             rolledValue = 0;
@@ -178,12 +186,21 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             this.isCreated = true;
             return MathF.Max(rolledValue, (((_maxDiceValue / 2) + 1) * _diceAmount) + _diceAmount * CalculateModifier(_flatConstitution));
         }
+        #endregion
 
+        #region help functions for skills and game logic
         public virtual void ChangeMainStat(float _mainUsedStatChange)
         {
             mainUsedStatValue -= _mainUsedStatChange;
         }
 
+        public void HealToFull()
+        {
+            hp = maxHP;
+        }
+        #endregion
+
+        #region status effect set functions
         public void GetStunned()
         {
             isStunned = true;
@@ -195,10 +212,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             isFeared = false;
         }
 
-        public void HealToFull()
-        {
-            hp = maxHP;
-        }
+
         public void StartPetrify()
         {
             startPetrified = true;
@@ -216,5 +230,6 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         {
             isCharmed = true;
         }
+        #endregion
     }
 }

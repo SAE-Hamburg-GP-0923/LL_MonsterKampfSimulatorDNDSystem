@@ -2,6 +2,7 @@
 {
     internal class Input
     {
+        #region Action and help variable
         public Action<float, float> printInputError;
         public Action<float, float> printRangeInstruction;
         public Action printRaceError;
@@ -14,6 +15,7 @@
         public Action printStepRace;
         public Action<List<float>> printRemainingStats;
         private int stepID = 1;
+        #endregion
 
         public int GetMonsterRaceInput(float _min, float _max)
         {

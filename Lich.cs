@@ -5,10 +5,14 @@ namespace LL_MonsterKampfSimulatorDNDSystem
     {
         Random random = new Random();
         private float baseArmor = 0;
+        private bool cursedEnemy;
+
+        #region Actions
         public Action<Monster> ActivateReviveSkill;
         public Action<Monster> ActivateCurseSkill;
         public Action<Monster> CurseEffectPrint;
-        private bool cursedEnemy;
+        #endregion
+
         public Lich(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Lich";

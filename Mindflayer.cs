@@ -5,9 +5,16 @@
 
         Random random = new Random();
         private float baseArmor = 3;
-        public Action<Monster> ActivateDrainStatSkill;
+
+        #region States
         private bool hasGrappledEnemy;
+        #endregion
+
+        #region Actions
+        public Action<Monster> ActivateDrainStatSkill;
         public Action<Monster> ActivateGrappleSkill;
+        #endregion
+
         public Mindflayer(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue) : base(_strength, _dexterity, _constitution, _intelligence, _wisdom, _charisma, _maxDiceValue)
         {
             monsterName = "Der Mindflayer";

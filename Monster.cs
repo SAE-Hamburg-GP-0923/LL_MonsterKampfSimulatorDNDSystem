@@ -4,6 +4,7 @@ namespace LL_MonsterKampfSimulatorDNDSystem
 {
     internal class Monster
     {
+        #region variables
         protected float hp;
         public float HP
         {
@@ -12,16 +13,21 @@ namespace LL_MonsterKampfSimulatorDNDSystem
             {
                 if (hp != value)
                 {
-                    hp = value;
+                    hp = MathF.Ceiling(value);
                     HPPrint.Invoke(this);
                 }
 
             }
         }
+
+        protected float maxHP;
+        public float MaxHP => maxHP;
         protected float strength;
         public float Strength => strength;
         protected float dexterity;
         public float Dexterity => dexterity;
+        protected float initiative;
+        public float Initiative => initiative;
         protected float constitution;
         public float Constitution => constitution;
 
@@ -35,56 +41,195 @@ namespace LL_MonsterKampfSimulatorDNDSystem
         protected float armor;
         public float Armor => armor;
 
+        protected ConsoleColor monsterColor;
+        public ConsoleColor MonsterColor => monsterColor;
 
-        
-        protected int rolledValue;
+        protected float rolledValue;
         protected int maxDiceValue;
         protected float mainUsedStatValue;
-        protected Random attackDice = new Random();
+        public float MainUsedStatValue => mainUsedStatValue;
+        protected Random monsterDice = new Random();
+        protected float usedAttackDiceAmount;
+        public float UsedAttackDiceAmount => usedAttackDiceAmount;
 
         public Game.EMonsterRace MonsterRace;
         protected string monsterName;
+        public Game.EBossRace BossRace;
         public string MonsterName => monsterName;
-        public delegate void DamagePrintHandler(Monster _monster, float _actualDamage);
-        public event DamagePrintHandler DamagePrint;
-        public delegate void HPPrintHandler(Monster _monster);
-        public event HPPrintHandler HPPrint;
+        #endregion
 
-        public Monster(float _strenght, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
+        #region actions
+        public Action<float, Monster> DamagePrint;
+        public Action<Monster> HPPrint;
+        public Action<float, Monster> PrintDiceRollingAnim;
+        public Action<float, Monster> DamageCalculationPrint;
+        public Action<float, Monster> DamageReducedPrint;
+        public Action<Monster> PrintIsStunned;
+        public Action<Monster, int> PrintPetrificationState;
+        public Action<Monster> PrintIsPetrified;
+        public Action<Monster> PrintIsFeared;
+        public Action<Monster> PrintIsCharmed;
+        public Action<Monster> PrintIsSlowed;
+        #endregion
+
+        #region status effects
+        protected int petrifiedCounter;
+        public int PetrifiedCounter => petrifiedCounter;
+        private bool startPetrified;
+        public bool StartPetrified => startPetrified;
+
+        private bool isCreated;
+        protected bool hasAttacked;
+        public bool HasAttacked => hasAttacked;
+        protected bool isStunned;
+        protected bool hasDisadvantage;
+        protected bool isFeared;
+        protected bool isCharmed;
+        #endregion
+
+        // defines how many rounds are needed till a monster dies of petrification
+        private int maxPetrifiedCount = 10;
+
+        public Monster(float _strength, float _dexterity, float _constitution, float _intelligence, float _wisdom, float _charisma, int _maxDiceValue)
         {
-            strength = _strenght;
+            strength = _strength;
             dexterity = _dexterity;
             constitution = _constitution;
             intelligence = _intelligence;
             wisdom = _wisdom;
             charisma = _charisma;
             maxDiceValue = _maxDiceValue;
+            initiative = _dexterity;
+            usedAttackDiceAmount = 5;
         }
-
-        public Monster()
-        {
-        }
-
         public virtual void Attack(Monster _creatureToHit)
         {
-            _creatureToHit.TakeDamage(RollAttackDice(1, maxDiceValue) + mainUsedStatValue);
+            if (startPetrified)
+            {
+                petrifiedCounter++;
+                PrintPetrificationState.Invoke(this, maxPetrifiedCount);
+            }
+            if (petrifiedCounter >= maxPetrifiedCount)
+            {
+                HP = 0;
+                PrintIsPetrified.Invoke(this);
+                return;
+            }
+            if (isStunned)
+            {
+                if (isStunned) PrintIsStunned.Invoke(this);
+                RemoveConditions();
+            }
+            else
+            {
+                if (isFeared) PrintIsFeared.Invoke(this);
+                RemoveConditions();
+                if (!hasAttacked) hasAttacked = true;
+                var damage = MathF.Max(0, RollMonsterDice(MathF.Max(usedAttackDiceAmount - Game.RoundCount, 1), maxDiceValue) + CalculateModifier(mainUsedStatValue));
+                if (isCharmed)
+                {
+                    PrintIsCharmed.Invoke(this);
+                    DamageCalculationPrint.Invoke(MathF.Floor(damage / 2), this);
+                    _creatureToHit.TakeDamage(MathF.Floor(damage / 2), this);
+                    isCharmed = false;
+                }
+                else
+                {
+                    DamageCalculationPrint.Invoke(damage, this);
+                    _creatureToHit.TakeDamage(damage, this);
+                }
+            }
         }
 
-        public virtual void TakeDamage(float _damageTaken, bool _isCritical = false)
+        public virtual void TakeDamage(float _damageTaken, Monster _attackingMonster, bool _isCritical = false)
         {
             float actualDamage;
             actualDamage = MathF.Max(_damageTaken - armor, 0);
-            DamagePrint.Invoke(this, actualDamage);
+            if (_damageTaken > 0) DamageReducedPrint.Invoke(armor, this);
+            DamagePrint.Invoke(actualDamage, this);
             HP = MathF.Max(0, HP - actualDamage);
         }
 
-        public int RollAttackDice(int _diceAmount, int _maxDiceValue)
+        #region Monster math functions
+        public float RollMonsterDice(float _diceAmount, int _maxDiceValue)
         {
+            rolledValue = 0;
             for (int i = 0; i < _diceAmount; i++)
             {
-                rolledValue += attackDice.Next(1, _maxDiceValue + 1);
+                if (hasDisadvantage)
+                {
+                    PrintIsSlowed.Invoke(this);
+                    rolledValue += MathF.Min(monsterDice.Next(1, _maxDiceValue + 1), monsterDice.Next(1, _maxDiceValue + 1));
+                    hasDisadvantage = false;
+                }
+                else
+                {
+                    rolledValue += monsterDice.Next(1, _maxDiceValue + 1);
+                }
+                if (isCreated && Game.ShowDiceRolling) PrintDiceRollingAnim.Invoke(rolledValue, this);
             }
             return rolledValue;
         }
+
+        public float CalculateModifier(float _flatValue)
+        {
+            return MathF.Floor((_flatValue - 10f) / 2);
+        }
+
+        public float RollMonsterHP(int _diceAmount, int _maxDiceValue, float _flatConstitution)
+        {
+            float rolledValue = RollMonsterDice(_diceAmount, _maxDiceValue);
+            for (int i = 0; i < _diceAmount; i++)
+            {
+                rolledValue += CalculateModifier(_flatConstitution);
+            }
+            this.isCreated = true;
+            return MathF.Max(rolledValue, (((_maxDiceValue / 2) + 1) * _diceAmount) + _diceAmount * CalculateModifier(_flatConstitution));
+        }
+        #endregion
+
+        #region help functions for skills and game logic
+        public virtual void ChangeMainStat(float _mainUsedStatChange)
+        {
+            mainUsedStatValue -= _mainUsedStatChange;
+        }
+
+        public void HealToFull()
+        {
+            hp = maxHP;
+        }
+        #endregion
+
+        #region status effect set functions
+        public void GetStunned()
+        {
+            isStunned = true;
+        }
+
+        public void RemoveConditions()
+        {
+            isStunned = false;
+            isFeared = false;
+        }
+
+
+        public void StartPetrify()
+        {
+            startPetrified = true;
+        }
+
+        public void SetDisadvantage()
+        {
+            hasDisadvantage = true;
+        }
+        public void SetFear()
+        {
+            isFeared = true;
+        }
+        public void SetCharm()
+        {
+            isCharmed = true;
+        }
+        #endregion
     }
 }
